@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">   
+<mapper namespace="manage"> 
+	 <!-- 表字段显式 -->  
+    <sql id="appColumns">  
+        u.app_name AS "userName"    
+    </sql>  
+    
+     <!-- 根据 userName 查询 -->  
+    <select id="getAppName" resultType="hashmap">  
+        SELECT  
+        <include refid="appColumns" />  
+        FROM  
+        testing u   
+    </select>  
+    <!-- 根据 userInfo 查询 --> 
+    <sql id="UserinfoColumns">  
+        u.userId		AS "userId",
+		u.organize    AS "organize",
+		u.name        AS "name",
+		u.namePin     AS "namePin",
+		u.sex         AS "sex",
+		u.email       AS "email",
+		u.phone       AS "phone",
+		u.zoneqq      AS "zoneqq",
+		u.address     AS "address",
+		u.state       AS "state",
+		u.applyDate   AS "applyDate",
+		u.acceptDate  AS "acceptDate",
+		u.accepterId  AS "accepterId",
+		u.remark      AS "remark" 
+    </sql>
+     
+     <select id="getUserinfoList" resultType="com.words.admin.manage.bean.UserInfoBean">  
+        SELECT  
+        <include refid="UserinfoColumns" />  
+        FROM  UserInfo u 
+    </select>  
+       
+    <select id="getUserinfoByEmail"   parameterType="string" resultType="com.words.admin.manage.bean.UserInfoBean">  
+        SELECT  
+        <include refid="UserinfoColumns" />  
+        FROM  UserInfo u where   u.email=  #{email}
+    </select>  
+    
+    <select id="getUserinfoById"   parameterType="int" resultType="com.words.admin.manage.bean.UserInfoBean">  
+        SELECT  
+        <include refid="UserinfoColumns" />  
+        FROM  UserInfo u where   u.userId=  #{userId}
+    </select>  
+    <insert  id="insertUserInfo"  parameterType="com.words.admin.manage.bean.UserInfoBean" useGeneratedKeys="true"  keyProperty="string">  
+         insert into UserInfo(name, namepin, organize, sex, email, phone, zoneqq, remark, address,acceptDate)  
+    			values(#{name},#{namePin},#{organize},#{sex},#{email},#{phone},#{zoneqq},#{remark},#{address}, null) 
+    </insert>  
+     <update id="updateUserInfo"  parameterType="com.words.admin.manage.bean.UserInfoBean">
+		 update UserInfo SET name=#{name},namepin=#{namePin},organize=#{organize},
+		        phone=#{phone},zoneqq=#{zoneqq},remark=#{remark},address=#{address},
+		 where userId=#{userId}
+	</update>
+    
+     <!-- 根据 roleInfo 查询 --> 
+    <sql id="roleinfoColumns">  
+        r.roleId  		as "roleId",
+		r.name          as "name",
+		r.description   as "desc",
+		r.userId        as "userId",
+		r.service       as "service",
+		r.state         as "state",
+		r.createDate    as "createDate",
+		r.modifyDate    as "modifyDate"
+    </sql>   
+    
+     <select id="getRoleinfoByName"   parameterType="string" resultType="com.words.admin.manage.bean.RoleInfoBean">  
+        SELECT  
+        <include refid="roleinfoColumns" />  
+        FROM  roleinfo r where   r.name=  #{name}
+    </select> 
+     <select id="getRoleinfoListByUserId"   parameterType="int" resultType="com.words.admin.manage.bean.RoleInfoBean">  
+        SELECT  
+        <include refid="roleinfoColumns" />  
+        FROM  roleinfo r where   r.userId=  #{userId}
+    </select> 
+     <select id="getRoleInfoById"   parameterType="int" resultType="com.words.admin.manage.bean.RoleInfoBean">  
+        SELECT  
+        <include refid="roleinfoColumns" />  
+        FROM  roleinfo r where   r.roleId=  #{roleId}
+    </select>  
+    <select id="getRoleinfoList"    resultType="com.words.admin.manage.bean.RoleInfoBean">  
+        SELECT  
+        <include refid="roleinfoColumns" />  
+        FROM  roleinfo r 
+    </select>  
+    <insert  id="insertRoleInfo"  parameterType="com.words.admin.manage.bean.RoleInfoBean" useGeneratedKeys="true"  keyProperty="string">  
+         insert into roleinfo(name,description,userId,service)  
+    			values(#{name},#{desc},#{userId},#{service}) 
+    </insert>  
+    <update id="updateRoleInfo"  parameterType="com.words.admin.manage.bean.RoleInfoBean">
+		 update UserInfo SET name=#{name},description=#{desc},modifyDate={modifyDate}
+		 where roleId=#{roleId}
+	</update>
+    <!-- 根据 roleInfo 查询 --> 
+     <sql id="serviceinfoColumns">  
+        r.serviceId  		as "serviceId",
+		r.description          as "description",
+		r.name   as "name",
+		r.state        as "state",
+		r.createDate       as "createDate",
+		r.modifyDate         as "modifyDate" 
+     </sql>     
+     <select id="getServiceListByServiceId"   parameterType="int" resultType="com.words.admin.manage.bean.ServiceInfoBean">  
+        SELECT  
+        <include refid="serviceinfoColumns" />  
+        FROM  ServiceInfo s where   s.serviceId=  #{serviceId}
+    </select> 
+    <select id="getServiceListAll"    resultType="com.words.admin.manage.bean.ServiceInfoBean">  
+        SELECT  
+        <include refid="serviceinfoColumns" />  
+        FROM  ServiceInfo s  
+    </select> 
+    
+      
+</mapper>
