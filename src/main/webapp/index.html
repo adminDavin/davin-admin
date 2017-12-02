@@ -4,13 +4,50 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>  
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
-<body>
-	<form method="POST" action="admin/uploadFile" enctype="multipart/form-data">
-		File to upload: <input type="file" name="file">
+<body> 
+
+
+	<form enctype=multipart/form-data method=POST>
+		File to upload: <input type="file" id='file' name="file">
 		Name: <input type="text" name="name"> 
+		<button class="ui primary button" id="upload">ddddddddddddddddddddddddddddddddddd </button>
 		<input type="submit" value="Upload"> Press here to upload the file!
 	</form>	
+	
+	
+	<script type="text/javascript">
+	 $("#upload").click(function () {
+	        let form = new FormData();
+	        console.log("dddfdd");
+	        let files = $("#file").get(0).files;
+	        if ($("#file").val() != "") {
+	        	console.log(files); 
+	            form.append("file",files[0]); 
+	            form.append("name", "dddddddddddddddddd"); 
+	            axios.post('admin/loadDocument', form)
+	                .then(function (response) {
+	                    console.log(response.data)
+	                 })
+	                .catch(function (error) {
+	                    console.log(error)
+	                });
+	        }
+	    });
+</script>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	<p>11</p>
 	<form method="POST" action="admin/uploadMulti" enctype="multipart/form-data">
 	    <input type="file" name="files" /><br/>

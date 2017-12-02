@@ -4,8 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import com.words.admin.manage.resource.TransferService;
-import com.words.admin.manage.resource.TransferServiceImpl;
+import com.words.admin.resource.TransferService;
+import com.words.admin.resource.TransferServiceImpl;
 
 @Configuration
 @ComponentScan("com.words.admin.manage.controller")

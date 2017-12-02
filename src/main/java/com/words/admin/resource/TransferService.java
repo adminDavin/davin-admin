@@ -1,4 +1,4 @@
-package com.words.admin.manage.resource;
+package com.words.admin.resource;
 
 public interface TransferService {
 

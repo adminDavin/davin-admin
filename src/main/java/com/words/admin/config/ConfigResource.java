@@ -14,11 +14,12 @@ import org.springframework.core.io.Resource;
 
 import com.words.admin.manage.repository.ManageRepository;
 import com.words.admin.manage.repository.ManageRepositoryImpl;
-import com.words.admin.manage.resource.DataSourceHikari;
-import com.words.admin.manage.resource.MybatisSpring;
+import com.words.admin.resource.DataSourceHikari;
+import com.words.admin.resource.MybatisSpring;
+import com.words.admin.words.repository.WordsAdminRepositoryImpl;
 
 @Configuration
-@ComponentScan("com.words.admin.manage.resource")
+@ComponentScan("com.words.admin.resource")
 @ComponentScan("com.words.admin.manage.repository")
 @PropertySource("classpath:jdbc.properties")
 public class ConfigResource {
@@ -30,6 +31,11 @@ public class ConfigResource {
 		return new ManageRepositoryImpl();
 	}
 
+	@Bean
+	public WordsAdminRepositoryImpl wordsAdminRepository() {
+		return new WordsAdminRepositoryImpl();
+	}
+
 	// @Bean
 	// public SqlSession sqlSession() {
 	// return this.sqlSessionFactory().openSession();
@@ -38,7 +44,8 @@ public class ConfigResource {
 	@Bean
 	public SqlSessionFactory sqlSessionFactory() {
 		Resource[] mapperLocations = { new ClassPathResource(jdbc.getProperty("mybatis.mapper.version")),
-				new ClassPathResource(jdbc.getProperty("mybatis.mapper.manage")) };
+				new ClassPathResource(jdbc.getProperty("mybatis.mapper.manage")),
+				new ClassPathResource(jdbc.getProperty("mybatis.mapper.words")) };
 		SqlSessionFactory sqlSessionFactory = null;
 		try {
 			DataSource dataSource = new DataSourceHikari(jdbc);

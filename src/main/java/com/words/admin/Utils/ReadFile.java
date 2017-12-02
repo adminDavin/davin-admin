@@ -9,7 +9,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class ReadFile {
 
-	public static void readToFile(MultipartFile file, Path saveDir) throws IOException {
+	public static void readToFile(MultipartFile file, Path saveDir, String newName) throws IOException {
+		if (!file.isEmpty()) {
+			Path saveFile = Paths.get(saveDir.toString(), newName);
+			Files.write(saveFile, file.getBytes());
+		}
+	}
+
+	public static void readToDB(MultipartFile file, Path saveDir) throws IOException {
 		if (!file.isEmpty()) {
 			Path saveFile = Paths.get(saveDir.toString(), file.getOriginalFilename());
 			Files.write(saveFile, file.getBytes());

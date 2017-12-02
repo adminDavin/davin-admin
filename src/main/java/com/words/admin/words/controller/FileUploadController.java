@@ -23,7 +23,7 @@ public class FileUploadController {
 		System.out.println(file.getOriginalFilename());
 		Path saveDir = Paths.get(rootPath);
 		try {
-			ReadFile.readToFile(file, saveDir);
+			ReadFile.readToFile(file, saveDir, file.getOriginalFilename());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -38,7 +38,7 @@ public class FileUploadController {
 		try {
 			for (MultipartFile file : files) {
 				Path saveDir = Paths.get(rootPath);
-				ReadFile.readToFile(file, saveDir);
+				ReadFile.readToFile(file, saveDir, file.getOriginalFilename());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

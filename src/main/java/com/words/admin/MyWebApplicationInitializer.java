@@ -18,8 +18,10 @@ import org.springframework.web.servlet.DispatcherServlet;
 import com.words.admin.config.ConfigInit;
 import com.words.admin.config.ConfigResource;
 import com.words.admin.config.ConfigService;
+import com.words.admin.config.Constant;
 
 public class MyWebApplicationInitializer implements WebApplicationInitializer {
+
 	@Override
 	public void onStartup(ServletContext container) throws ServletException {
 		System.out.println("------------------------------------------------------------");
@@ -31,7 +33,7 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 		System.out.println("------------------------------------------------------------");
 
 		AnnotationConfigWebApplicationContext cxt = new AnnotationConfigWebApplicationContext();
-		cxt.register(ConfigInit.class, ConfigResource.class, ConfigService.class);
+		cxt.register(ConfigInit.class, ConfigResource.class, ConfigService.class, Constant.class);
 		cxt.refresh();
 
 		DispatcherServlet servlet = new DispatcherServlet(cxt);
@@ -51,18 +53,10 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
 	}
 
-	private static final String LOCATION = "D:/temp/"; // Temporary location where files will be stored
-
-	private static final long MAX_FILE_SIZE = 5242880; // 5MB : Max file size.
-														// Beyond that size spring will throw exception.
-	private static final long MAX_REQUEST_SIZE = 20971520; // 20MB : Total request size containing Multi part.
-
-	private static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk
-
 	// 设置上传的相关参数
 	public static MultipartConfigElement getMultipartConfigElement() {
-		MultipartConfigElement multipartConfigElement = new MultipartConfigElement(LOCATION, MAX_FILE_SIZE,
-				MAX_REQUEST_SIZE, FILE_SIZE_THRESHOLD);
+		MultipartConfigElement multipartConfigElement = new MultipartConfigElement(Constant.LOCATION,
+				Constant.MAX_FILE_SIZE, Constant.MAX_REQUEST_SIZE, Constant.FILE_SIZE_THRESHOLD);
 		return multipartConfigElement;
 	}
 

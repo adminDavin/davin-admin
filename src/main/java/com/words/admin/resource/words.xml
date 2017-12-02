@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">   
+<mapper namespace="words"> 
+	 <!-- 表字段显式 -->  
+    <sql id="appColumns">  
+        u.app_name AS "userName"    
+    </sql>  
+    <!-- 根据 documentInfo 查询 -->  
+     <sql id="documentInfo">     
+        d.docId AS "docId" ,   
+        d.name AS "name",
+        d.originalName AS "originalName",
+        d.uuid AS "uuid",
+        d.userId AS "userId"  ,
+        d.createTime AS "createTime",   
+        d.updateTime AS "updateTime",   
+        d.expireTime AS "expireTime",   
+        d.Remark AS "Remark"     
+    </sql>  
+    <select id="getAppName"  resultType="com.words.admin.words.bean.DocumentInfo">  
+        SELECT  
+        <include refid="documentInfo" />  
+        FROM  
+        documentInfo u   
+    </select>  
+    <insert  id="insertDocumentInfo"  parameterType="com.words.admin.words.bean.DocumentInfo" useGeneratedKeys="true"  keyProperty="string">  
+         insert into documentInfo(name,originalName,uuid)  
+    			values(#{name},#{originalName},#{uuid}) 
+    </insert>       
+</mapper>

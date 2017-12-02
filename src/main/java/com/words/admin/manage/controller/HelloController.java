@@ -19,8 +19,8 @@ import com.words.admin.config.Constant;
 import com.words.admin.manage.bean.RoleInfoBean;
 import com.words.admin.manage.bean.ServiceInfoBean;
 import com.words.admin.manage.bean.UserInfoBean;
-import com.words.admin.manage.resource.TransferService;
 import com.words.admin.manage.service.ManageService;
+import com.words.admin.resource.TransferService;
 
 import jodd.json.JsonArray;
 import jodd.json.JsonObject;
