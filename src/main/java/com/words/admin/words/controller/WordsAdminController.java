@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +45,8 @@ public class WordsAdminController {
 		try {
 			ReadFile.readToFile(file, Paths.get(Constant.PDFPATH), newName + ".pdf");
 		} catch (IOException e) {
+			System.out.println("**********************************");
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 			RespUtils.responseJsonFailed(response, "load file failed!");
 			return null;

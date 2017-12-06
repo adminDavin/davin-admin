@@ -24,11 +24,8 @@ public class Constant {
 	public static String SERVICESTATE = "state";
 	public static String CREATEDATE = "createDate";
 	public static String MODIFYDATE = "modifyDate";
-	public static String PDFPATH = System.getProperty("catalina.home") + "/webapps/words-admin/pdf-directory";
-	public static final String LOCATION = "C:\\Project\\king-words\\tmp"; // Temporary location where files
-																			// will
-																			// be stored
-
+	public static String PDFPATH = "E:\\words-admin\\admin\\words-admin\\pdf-directory";
+	public static final String LOCATION = "E:\\words-admin\\admin\\words-admin";
 	public static final long MAX_FILE_SIZE = 1000 * 1024 * 1024; // 5MB : Max file size.
 	public static final long MAX_REQUEST_SIZE = 1000 * 1024 * 1024; // 20MB : Total request size containing Multi part
 	public static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk
