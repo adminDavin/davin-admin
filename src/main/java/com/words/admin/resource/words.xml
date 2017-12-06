@@ -28,5 +28,32 @@
     <insert  id="insertDocumentInfo"  parameterType="com.words.admin.words.bean.DocumentInfo" useGeneratedKeys="true"  keyProperty="string">  
          insert into documentInfo(name,originalName,uuid)  
     			values(#{name},#{originalName},#{uuid}) 
-    </insert>       
+    </insert>     
+    
+    <!-- 根据  wordsInfo  查询 -->  
+     <sql id="wordsInfo">     
+        w.wordsId AS "wordsId" ,   
+        w.docId AS "docId",
+        w.userId AS "userId",
+        w.textContent AS "textContent",
+        w.initPage AS "initPage"  ,
+        w.pageNum AS "pageNum",   
+        w.state AS "state",   
+        w.createTime AS "createTime",   
+        w.updateTime AS "updateTime"     
+    </sql>  
+    <select id="getWordsInfoText" parameterType="com.words.admin.words.bean.WordsInfo" resultType="com.words.admin.words.bean.WordsInfo">  
+        SELECT  
+        <include refid="wordsInfo" />  
+        FROM  
+        wordsInfo w where docId=#{docId} and textContent=#{textContent}
+    </select>   
+     <insert  id="insertWordsInfo"  parameterType="com.words.admin.words.bean.WordsInfo" useGeneratedKeys="true"  keyProperty="string">  
+         insert into wordsInfo(docId,userId,textContent,initPage,pageNum)  
+    			values(#{docId},#{userId},#{textContent},#{initPage},#{pageNum}) 
+    </insert> 
+    <delete id="deleteWordsById" parameterType="int">  
+	     DELETE FROM wordsInfo WHERE wordsId = #{wordsId}  
+	</delete>  
+    
 </mapper>

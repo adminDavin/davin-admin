@@ -2,6 +2,7 @@ package com.words.admin.words.controller;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.web.response.RespUtils;
 import com.words.admin.Utils.ReadFile;
+import com.words.admin.Utils.ValiedParams;
 import com.words.admin.config.Constant;
 import com.words.admin.words.service.WordsAdminService;
 
@@ -49,12 +51,15 @@ public class WordsAdminController {
 			RespUtils.responseJsonFailed(response, "load file failed!");
 			return null;
 		}
-		if (wordsAdminService.addDocumentInfo(response, name, newName, file.getOriginalFilename()) == null) {
+		String docId = wordsAdminService.addDocumentInfo(response, name, newName, file.getOriginalFilename());
+		if (docId == null) {
 			return null;
 		}
+
 		JsonObject result = new JsonObject();
 		result.put("name", name);
 		result.put("uuID", newName);
+		result.put("docId", docId);
 		return RespUtils.success(result);
 	}
 
@@ -64,4 +69,43 @@ public class WordsAdminController {
 		JsonObject result = new JsonObject();
 		return RespUtils.success(result);
 	}
+
+	@RequestMapping("/addWords")
+	public void addWords(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, String[]> wordsInfoMap = ValiedParams.checkKeyExist(response, request.getParameterMap(),
+				Constant.WORDSINFO);
+		if (wordsInfoMap == null) {
+			return;
+		}
+		String wordsId = wordsAdminService.addWordsInfo(response, wordsInfoMap);
+		if (wordsId == null) {
+			return;
+		}
+		JsonObject result = new JsonObject();
+		JsonObject data = new JsonObject();
+		data.put("userId", wordsId);
+		result.put("data", data);
+		result.put("message", "words add success");
+		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/deleteWords")
+	public void deleteWords(HttpServletRequest request, HttpServletResponse response) {
+		int wordsId = 0;
+		try {
+			String wordsIds = request.getParameter("wordsId");
+			wordsId = Integer.parseInt(wordsIds);
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "wordsId is required!");
+			return;
+		}
+		String res = wordsAdminService.deleteWordsById(response, wordsId);
+		if (res == null) {
+			return;
+		}
+		JsonObject result = new JsonObject();
+		result.put("message", "删除成功");
+		RespUtils.responseJsonSuccess(response, result);
+	}
+
 }

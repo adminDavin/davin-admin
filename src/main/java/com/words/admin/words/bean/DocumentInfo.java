@@ -27,7 +27,11 @@ public class DocumentInfo {
 		obj.put("state", state);
 		obj.put("createDate", createTime.toInstant().toString());
 		obj.put("modifyDate", updateTime.toInstant().toString());
-		obj.put("modifyDate", expireTime.toInstant().toString());
+		if (expireTime == null) {
+			obj.put("expireTime", "");
+		} else {
+			obj.put("expireTime", expireTime.toInstant().toString());
+		}
 		return obj;
 	}
 
