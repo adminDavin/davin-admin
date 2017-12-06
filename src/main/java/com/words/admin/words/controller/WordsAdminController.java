@@ -47,6 +47,8 @@ public class WordsAdminController {
 		try {
 			ReadFile.readToFile(file, Paths.get(Constant.PDFPATH), newName + ".pdf");
 		} catch (IOException e) {
+			System.out.println("**********************************");
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 			RespUtils.responseJsonFailed(response, "load file failed!");
 			return null;
