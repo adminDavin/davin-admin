@@ -28,7 +28,10 @@
     <insert  id="insertDocumentInfo"  parameterType="com.words.admin.words.bean.DocumentInfo" useGeneratedKeys="true"  keyProperty="string">  
          insert into documentInfo(name,originalName,uuid)  
     			values(#{name},#{originalName},#{uuid}) 
-    </insert>     
+    </insert>   
+    <update id="updateDocument"  parameterType="String">  
+         update documentInfo set state=2 where uuid=#{uuid}
+    </update >     
     
     <!-- 根据  wordsInfo  查询 -->  
      <sql id="wordsInfo">     
@@ -46,7 +49,7 @@
         SELECT  
         <include refid="wordsInfo" />  
         FROM  
-        wordsInfo w where docId=#{docId} and textContent=#{textContent}
+        wordsInfo w where docId=#{docId} and textContent=#{textContent} and state=0
     </select>   
      <insert  id="insertWordsInfo"  parameterType="com.words.admin.words.bean.WordsInfo" useGeneratedKeys="true"  keyProperty="string">  
          insert into wordsInfo(docId,userId,textContent,initPage,pageNum)  
