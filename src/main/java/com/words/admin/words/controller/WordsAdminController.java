@@ -85,7 +85,7 @@ public class WordsAdminController {
 		}
 		JsonObject result = new JsonObject();
 		JsonObject data = new JsonObject();
-		data.put("userId", wordsId);
+		data.put("wordsId", wordsId);
 		result.put("data", data);
 		result.put("message", "words add success");
 		RespUtils.responseJsonSuccess(response, result);

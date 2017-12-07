@@ -5,8 +5,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
@@ -20,7 +18,7 @@ import jodd.json.JsonObject;
 
 @SessionScope
 @Service("wordsAdminService")
-public class WordsAdminServiceImpl implements WordsAdminService, ApplicationEventPublisherAware {
+public class WordsAdminServiceImpl implements WordsAdminService {
 	@Autowired(required = true)
 	private WordsAdminRepository wordsAdminRepository;
 
@@ -94,12 +92,6 @@ public class WordsAdminServiceImpl implements WordsAdminService, ApplicationEven
 			RespUtils.responseJsonFailed(response, "words is add failed for user is invalid!");
 			return null;
 		}
-
-	}
-
-	@Override
-	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-		// TODO Auto-generated method stub
 
 	}
 

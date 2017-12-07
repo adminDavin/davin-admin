@@ -23,7 +23,7 @@ public class MyTaskService {
 	@Autowired(required = true)
 	private SqlSessionFactory sqlSessionFactory;
 
-	@Scheduled(cron = "0/10 * * * * ?")
+	@Scheduled(cron = "0 0 23 * * ?")
 	public void reportCurrentTime() {
 		Path pdfDir = Paths.get(Constant.PDFPATH);
 		try (Stream<Path> files = Files.list(pdfDir)) {
