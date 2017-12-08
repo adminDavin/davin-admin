@@ -19,6 +19,13 @@
         d.expireTime AS "expireTime",   
         d.Remark AS "Remark"     
     </sql>  
+     
+    <select id="getDocuCountByUuid" parameterType="String"  resultType="int">  
+        SELECT  
+        count(1)
+        FROM  
+        documentInfo u   where uuId=#{uuId}
+    </select>  
     <select id="getAppName"  resultType="com.words.admin.words.bean.DocumentInfo">  
         SELECT  
         <include refid="documentInfo" />  
@@ -50,7 +57,13 @@
         <include refid="wordsInfo" />  
         FROM  
         wordsInfo w where docId=#{docId} and textContent=#{textContent} and state=0
-    </select>   
+    </select>  
+    <select id="getWordsInfoList" parameterType="com.words.admin.words.bean.WordsInfo" resultType="com.words.admin.words.bean.WordsInfo">  
+        SELECT  
+        <include refid="wordsInfo" />  
+        FROM  
+        wordsInfo w where docId=#{docId}   and state=#{state}
+    </select>  
      <insert  id="insertWordsInfo"  parameterType="com.words.admin.words.bean.WordsInfo" useGeneratedKeys="true"  keyProperty="string">  
          insert into wordsInfo(docId,userId,textContent,initPage,pageNum)  
     			values(#{docId},#{userId},#{textContent},#{initPage},#{pageNum}) 

@@ -1,5 +1,6 @@
 package com.words.admin.words.repository;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -52,6 +53,20 @@ public class WordsAdminRepositoryImpl implements WordsAdminRepository {
 			int docuId = sqlSession.delete("words.deleteWordsById", wordsId);
 			sqlSession.commit();
 			return docuId;
+		}
+	}
+
+	@Override
+	public int getDocuCountByUuid(String uuid) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			return sqlSession.selectOne("words.getDocuCountByUuid", uuid);
+		}
+	}
+
+	@Override
+	public List<WordsInfo> getWordsInfoList(WordsInfo wordsInfo) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			return sqlSession.selectList("words.getWordsInfoList", wordsInfo);
 		}
 	}
 

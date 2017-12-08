@@ -4,6 +4,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import jodd.json.JsonArray;
+
 public interface WordsAdminService {
 	public void getServiceTest();
 
@@ -12,4 +14,8 @@ public interface WordsAdminService {
 	public String addWordsInfo(HttpServletResponse response, Map<String, String[]> wordsInfoMap);
 
 	public String deleteWordsById(HttpServletResponse response, int wordsId);
+
+	public boolean getDocuByUuid(String uuid);
+
+	public JsonArray getWordsInfo(HttpServletResponse response, Map<String, String[]> exportWordsMap, int state);
 }

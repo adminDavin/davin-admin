@@ -1,5 +1,6 @@
 package com.words.admin.words.service;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import com.words.admin.words.bean.DocumentInfo;
 import com.words.admin.words.bean.WordsInfo;
 import com.words.admin.words.repository.WordsAdminRepository;
 
+import jodd.json.JsonArray;
 import jodd.json.JsonObject;
 
 @SessionScope
@@ -95,4 +97,48 @@ public class WordsAdminServiceImpl implements WordsAdminService {
 
 	}
 
+	@Override
+	public boolean getDocuByUuid(String uuid) {
+		try {
+			if (wordsAdminRepository.getDocuCountByUuid(uuid) == 0) {
+				return false;
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public JsonArray getWordsInfo(HttpServletResponse response, Map<String, String[]> map, int state) {
+		WordsInfo wordsInfo = new WordsInfo();
+		try {
+			String docId = map.get(Constant.WORDSDOCID)[0];
+			wordsInfo.setDocId(Integer.parseInt(docId));
+			String userId = map.get(Constant.USERID)[0];
+			wordsInfo.setUserId(Integer.parseInt(userId));
+			wordsInfo.setState(state);
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "words exports for error message!");
+			return null;
+		}
+		try {
+			List<WordsInfo> words = wordsAdminRepository.getWordsInfoList(wordsInfo);
+			JsonArray jsonArray = new JsonArray();
+			for (WordsInfo item : words) {
+				jsonArray.add(item.getJsonInfo());
+			}
+			if (jsonArray.size() == 0) {
+				RespUtils.responseJsonFailed(response, "words list is empty!");
+				return null;
+			}
+			return jsonArray;
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "words is add failed for user is invalid!");
+			return null;
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package com.words.admin.words.repository;
 
+import java.util.List;
 import java.util.Map;
 
 import com.words.admin.words.bean.DocumentInfo;
@@ -15,5 +16,9 @@ public interface WordsAdminRepository {
 	public int insertWordsInfo(WordsInfo wordsInfo);
 
 	public int deleteWordsById(int wordsId);
+
+	public int getDocuCountByUuid(String uuid);
+
+	public List<WordsInfo> getWordsInfoList(WordsInfo wordsInfo);
 
 }
