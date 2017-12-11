@@ -2,6 +2,8 @@ package com.words.admin.config;
 
 public class Constant {
 
+	public static String STATE = "state";
+
 	public static String NAME = "name";
 	public static String NAMEPIN = "namepin";
 	public static String ORGANIZE = "Organize";
@@ -36,6 +38,7 @@ public class Constant {
 
 	public static String PDFPATH = "C:\\Temp\\pdf-store\\";
 	public static final String LOCATION = "C:\\Temp\\";
+	public static final String EXPORTDOC = "doc";
 	public static final String[] DOCUTYTE = { "pdf", "doc" };
 
 	public static final long MAX_FILE_SIZE = 1000 * 1024 * 1024; // 5MB : Max file size.

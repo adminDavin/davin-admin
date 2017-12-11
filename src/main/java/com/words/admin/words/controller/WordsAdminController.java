@@ -1,7 +1,6 @@
 package com.words.admin.words.controller;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +26,8 @@ import com.words.admin.Utils.ReadFile;
 import com.words.admin.Utils.Utils;
 import com.words.admin.Utils.ValiedParams;
 import com.words.admin.config.Constant;
+import com.words.admin.words.export.ExportFactory;
+import com.words.admin.words.export.ExportService;
 import com.words.admin.words.service.WordsAdminService;
 
 import jodd.json.JsonArray;
@@ -106,27 +107,79 @@ public class WordsAdminController {
 		if (exportWordsMap == null) {
 			return;
 		}
-		JsonArray wordsInfo = wordsAdminService.getWordsInfo(response, exportWordsMap, 0);
-		String fileName = exportWordsMap.get("fileName")[0];
-		String type = exportWordsMap.get("type")[0];
-		response.setContentType("application/octet-stream;charset=UTF-8");
 		try {
-			response.setHeader("content-disposition",
-					"attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + "." + type);
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
+			String type = exportWordsMap.get(Constant.EXPORTTYPE)[0];
+			ExportService export = ExportFactory.exportBuild(type);
+			if (export == null) {
+				RespUtils.responseJsonFailed(response, "export file type is not surport!");
+				return;
+			}
+			JsonArray wordsInfo = wordsAdminService.getWordsInfo(response, exportWordsMap, 0);
+			if (wordsInfo == null) {
+				return;
+			}
+			export.setTableForWordsExport(wordsInfo);
+			export.docClose();
+			String fileName = exportWordsMap.get(Constant.EXPORTNAME)[0];
+			String fileNameEncode = URLEncoder.encode(fileName, "UTF-8") + "." + type;
+			response.setContentType("application/octet-stream;charset=UTF-8");
+			response.setHeader("content-disposition", "attachment;filename=" + fileNameEncode);
+			FileCopyUtils.copy(export.getDocContent(), response.getOutputStream());
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "words export failed!");
+			return;
 		}
+	}
+
+	@RequestMapping("/listWords")
+	public void listWords(HttpServletRequest request, HttpServletResponse response) {
+		String docId = request.getParameter(Constant.WORDSDOCID);
+		String userId = request.getParameter(Constant.USERID);
+		if (userId == null) {
+			RespUtils.responseJsonFailed(response, "userId is required!");
+			return;
+		}
+		JsonArray wordsInfo = null;
+
 		try {
-			FileCopyUtils.copy(wordsInfo.toString().getBytes(), response.getOutputStream());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if (docId == null) {
+				wordsInfo = wordsAdminService.getListWords(response, Integer.parseInt(userId), 0, 5);
+			} else {
+				wordsInfo = wordsAdminService.getListWords(response, Integer.parseInt(userId), Integer.parseInt(docId),
+						0);
+			}
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "params is invalied!");
+			return;
 		}
-		// JsonObject result = new JsonObject();
-		// result.put("data", wordsInfo);
-		// result.put("message", "words add success");
-		//
-		// RespUtils.responseJsonSuccess(response, result);
+		if (wordsInfo == null) {
+			return;
+		}
+	}
+
+	@RequestMapping("/listDocument")
+	public void listDocument(HttpServletRequest request, HttpServletResponse response) {
+		String state = request.getParameter(Constant.STATE);
+		String userId = request.getParameter(Constant.USERID);
+		if (userId == null) {
+			RespUtils.responseJsonFailed(response, "userId is required!");
+			return;
+		}
+		JsonArray wordsInfo = null;
+
+		try {
+			if (state == null) {
+				wordsInfo = wordsAdminService.listDocument(response, Integer.parseInt(userId), 5);
+			} else {
+				wordsInfo = wordsAdminService.listDocument(response, Integer.parseInt(userId), Integer.parseInt(state));
+			}
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "params is invalied!");
+			return;
+		}
+		if (wordsInfo == null) {
+			return;
+		}
 	}
 
 	@RequestMapping("/wordsInfo")

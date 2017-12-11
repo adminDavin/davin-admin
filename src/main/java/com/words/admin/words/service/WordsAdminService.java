@@ -18,4 +18,8 @@ public interface WordsAdminService {
 	public boolean getDocuByUuid(String uuid);
 
 	public JsonArray getWordsInfo(HttpServletResponse response, Map<String, String[]> exportWordsMap, int state);
-}
+
+	public JsonArray getListWords(HttpServletResponse response, int userId, int docId, int state);
+
+	public JsonArray listDocument(HttpServletResponse response, int userId, int state);
+
