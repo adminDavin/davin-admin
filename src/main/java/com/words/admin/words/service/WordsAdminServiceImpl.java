@@ -55,7 +55,7 @@ public class WordsAdminServiceImpl implements WordsAdminService {
 			wordsInfo.setUserId(Integer.parseInt(userId));
 			String initPage = map.get(Constant.INITPAGE)[0];
 			wordsInfo.setInitPage(Integer.parseInt(initPage));
-			String pageNum = map.get(Constant.INITPAGE)[0];
+			String pageNum = map.get(Constant.PAGENUM)[0];
 			wordsInfo.setPageNum(Integer.parseInt(pageNum));
 			wordsInfo.setTextContent(map.get(Constant.TEXTCONTENT)[0]);
 		} catch (Exception e) {

@@ -22,4 +22,4 @@ public interface WordsAdminService {
 	public JsonArray getListWords(HttpServletResponse response, int userId, int docId, int state);
 
 	public JsonArray listDocument(HttpServletResponse response, int userId, int state);
-
+}

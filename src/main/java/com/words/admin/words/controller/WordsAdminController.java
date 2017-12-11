@@ -125,7 +125,9 @@ public class WordsAdminController {
 			response.setContentType("application/octet-stream;charset=UTF-8");
 			response.setHeader("content-disposition", "attachment;filename=" + fileNameEncode);
 			FileCopyUtils.copy(export.getDocContent(), response.getOutputStream());
+
 		} catch (Exception e) {
+			e.printStackTrace();
 			RespUtils.responseJsonFailed(response, "words export failed!");
 			return;
 		}
@@ -207,7 +209,7 @@ public class WordsAdminController {
 		RespUtils.responseJsonSuccess(response, result);
 	}
 
-	@RequestMapping("/deleteWords")
+	@RequestMapping("/")
 	public void deleteWords(HttpServletRequest request, HttpServletResponse response) {
 		int wordsId = 0;
 		try {

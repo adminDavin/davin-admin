@@ -82,9 +82,12 @@ public class ExportServiceDocImpl implements ExportService {
 		for (Object item : tabCon) {
 			JsonObject words = (JsonObject) item;
 			table.addCell(getCell(String.valueOf(index)));
-			table.addCell(getCell(words.getValue(Constant.TEXTCONTENT)));
-			int init = Integer.parseInt(words.getValue(Constant.INITPAGE));
-			int page = Integer.parseInt(words.getValue(Constant.PAGENUM));
+			table.addCell(getCell(words.getString(Constant.TEXTCONTENT)));
+
+			System.out.println(words);
+			System.out.println(words.getInteger(Constant.INITPAGE));
+			int init = words.getInteger(Constant.INITPAGE);
+			int page = words.getInteger(Constant.PAGENUM);
 			table.addCell(getCell(String.valueOf(page + init)));
 			index++;
 		}
