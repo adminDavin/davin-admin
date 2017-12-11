@@ -65,8 +65,14 @@ public class WordsAdminRepositoryImpl implements WordsAdminRepository {
 
 	@Override
 	public List<WordsInfo> getWordsInfoList(WordsInfo wordsInfo) {
-		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-			return sqlSession.selectList("words.getWordsInfoList", wordsInfo);
+		if (wordsInfo.getState() == 5) {
+			try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+				return sqlSession.selectList("words.getWordsInfoListAll", wordsInfo);
+			}
+		} else {
+			try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+				return sqlSession.selectList("words.getWordsInfoList", wordsInfo);
+			}
 		}
 	}
 

@@ -137,8 +137,44 @@ public class WordsAdminServiceImpl implements WordsAdminService {
 			return jsonArray;
 		} catch (Exception e) {
 			e.printStackTrace();
-			RespUtils.responseJsonFailed(response, "words is add failed for user is invalid!");
+			RespUtils.responseJsonFailed(response, "words list failed for database failed!");
 			return null;
 		}
+	}
+
+	@Override
+	public JsonArray getListWords(HttpServletResponse response, int userId, int docId, int state) {
+		WordsInfo wordsInfo = new WordsInfo();
+		try {
+			wordsInfo.setDocId(docId);
+			wordsInfo.setDocId(userId);
+			wordsInfo.setState(state);
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "words exports for error message!");
+			return null;
+		}
+		try {
+			List<WordsInfo> words = wordsAdminRepository.getWordsInfoList(wordsInfo);
+			JsonArray jsonArray = new JsonArray();
+			for (WordsInfo item : words) {
+				jsonArray.add(item.getJsonInfo());
+			}
+			if (jsonArray.size() == 0) {
+				RespUtils.responseJsonFailed(response, "words list is empty!");
+				return null;
+			}
+			return jsonArray;
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "words list failed for database failed!");
+			return null;
+		}
+	}
+
+	@Override
+	public JsonArray listDocument(HttpServletResponse response, int parseInt, int parseInt2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

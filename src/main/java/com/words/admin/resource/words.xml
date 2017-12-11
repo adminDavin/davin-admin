@@ -62,8 +62,15 @@
         SELECT  
         <include refid="wordsInfo" />  
         FROM  
-        wordsInfo w where docId=#{docId}   and state=#{state}
-    </select>  
+        wordsInfo w where docId=#{docId}   and state=#{state} and userId=#{userId}
+    </select> 
+     
+    <select id="getWordsInfoListAll" parameterType="com.words.admin.words.bean.WordsInfo" resultType="com.words.admin.words.bean.WordsInfo">  
+        SELECT  
+        <include refid="wordsInfo" />  
+        FROM  
+        wordsInfo w where docId=#{docId}  and userId=#{userId}
+    </select>   
      <insert  id="insertWordsInfo"  parameterType="com.words.admin.words.bean.WordsInfo" useGeneratedKeys="true"  keyProperty="string">  
          insert into wordsInfo(docId,userId,textContent,initPage,pageNum)  
     			values(#{docId},#{userId},#{textContent},#{initPage},#{pageNum}) 
