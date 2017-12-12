@@ -7,6 +7,7 @@ import jodd.json.JsonObject;
 public class DocumentInfo {
 
 	private int docId;
+
 	private String name;
 	private String originalName;
 	private String uuid;
@@ -33,6 +34,22 @@ public class DocumentInfo {
 			obj.put("expireTime", expireTime.toInstant().toString());
 		}
 		return obj;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public Timestamp getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(Timestamp expireTime) {
+		this.expireTime = expireTime;
 	}
 
 	public int getDocId() {

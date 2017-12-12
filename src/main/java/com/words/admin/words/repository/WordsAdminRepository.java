@@ -21,4 +21,6 @@ public interface WordsAdminRepository {
 
 	public List<WordsInfo> getWordsInfoList(WordsInfo wordsInfo);
 
+	public List<DocumentInfo> getDocuInfoList(DocumentInfo beanInfo);
+
 }

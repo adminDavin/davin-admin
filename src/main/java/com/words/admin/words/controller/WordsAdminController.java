@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,28 +50,40 @@ public class WordsAdminController {
 	}
 
 	@RequestMapping(value = "/loadDocument", method = RequestMethod.POST)
-	public String loadDocument(@RequestParam("file") MultipartFile file, HttpServletRequest request,
+	public void loadDocument(@RequestParam("file") MultipartFile file, HttpServletRequest request,
 			HttpServletResponse response) {
 		String name = request.getParameter("name");
+		String userIdStr = request.getParameter("userId");
+		int userId = 0;
+		if (userIdStr == null) {
+			RespUtils.responseJsonFailed(response, "userId is required!");
+			return;
+		} else {
+			try {
+				userId = Integer.parseInt(userIdStr);
+			} catch (Exception e) {
+				RespUtils.responseJsonFailed(response, "userId must be number!");
+				return;
+			}
+		}
 		String newName = UUID.randomUUID().toString().replace("-", "");
 		try {
 			ReadFile.readToFile(file, Paths.get(Constant.PDFPATH), newName + ".pdf");
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
 			e.printStackTrace();
 			RespUtils.responseJsonFailed(response, "load file failed!");
-			return null;
+			return;
 		}
-		String docId = wordsAdminService.addDocumentInfo(response, name, newName, file.getOriginalFilename());
+		String docId = wordsAdminService.addDocumentInfo(response, userId, name, newName, file.getOriginalFilename());
 		if (docId == null) {
-			return null;
+			return;
 		}
 
 		JsonObject result = new JsonObject();
 		result.put("name", name);
 		result.put("uuID", newName);
 		result.put("docId", docId);
-		return RespUtils.success(result);
+		RespUtils.responseJsonSuccess(response, result);
 	}
 
 	@RequestMapping(value = "/downloadFile/{userId}/{uuid}.{type}", method = RequestMethod.GET)
@@ -156,6 +169,11 @@ public class WordsAdminController {
 		}
 		if (wordsInfo == null) {
 			return;
+		} else {
+			JsonObject result = new JsonObject();
+			result.put("data", wordsInfo);
+			result.put("message", "success");
+			RespUtils.responseJsonSuccess(response, result);
 		}
 	}
 
@@ -168,7 +186,6 @@ public class WordsAdminController {
 			return;
 		}
 		JsonArray wordsInfo = null;
-
 		try {
 			if (state == null) {
 				wordsInfo = wordsAdminService.listDocument(response, Integer.parseInt(userId), 5);
@@ -181,6 +198,11 @@ public class WordsAdminController {
 		}
 		if (wordsInfo == null) {
 			return;
+		} else {
+			JsonObject result = new JsonObject();
+			result.put("data", wordsInfo);
+			result.put("message", "success");
+			RespUtils.responseJsonSuccess(response, result);
 		}
 	}
 
@@ -212,7 +234,13 @@ public class WordsAdminController {
 	@RequestMapping("/deleteWords")
 	public void deleteWords(HttpServletRequest request, HttpServletResponse response) {
 		int wordsId = 0;
-		r
+
+		Map<String, String[]> tmp = request.getParameterMap();
+		System.out.println(tmp.size());
+		for (Entry<String, String[]> item : tmp.entrySet()) {
+			System.out.println(item.getKey());
+			System.out.println(item.getValue());
+		}
 		try {
 			String wordsIds = request.getParameter("wordsId");
 			wordsId = Integer.parseInt(wordsIds);

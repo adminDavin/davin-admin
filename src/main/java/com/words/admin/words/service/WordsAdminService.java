@@ -9,8 +9,6 @@ import jodd.json.JsonArray;
 public interface WordsAdminService {
 	public void getServiceTest();
 
-	public String addDocumentInfo(HttpServletResponse response, String name, String newName, String orginalFileName);
-
 	public String addWordsInfo(HttpServletResponse response, Map<String, String[]> wordsInfoMap);
 
 	public String deleteWordsById(HttpServletResponse response, int wordsId);
@@ -22,4 +20,7 @@ public interface WordsAdminService {
 	public JsonArray getListWords(HttpServletResponse response, int userId, int docId, int state);
 
 	public JsonArray listDocument(HttpServletResponse response, int userId, int state);
+
+	public String addDocumentInfo(HttpServletResponse response, int userId, String name, String newName,
+			String originalFilename);
 }

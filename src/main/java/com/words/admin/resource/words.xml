@@ -32,9 +32,22 @@
         FROM  
         documentInfo u   
     </select>  
+    
+    <select id="getDocuInfoListAll" parameterType="com.words.admin.words.bean.DocumentInfo" resultType="com.words.admin.words.bean.DocumentInfo">  
+        SELECT  
+        <include refid="documentInfo" />  
+        FROM  
+        documentInfo d where userId=#{userId}  
+    </select>  
+     <select id="getDocuInfoList" parameterType="com.words.admin.words.bean.DocumentInfo" resultType="com.words.admin.words.bean.DocumentInfo">  
+        SELECT  
+        <include refid="documentInfo" />  
+        FROM  
+        documentInfo d where userId=#{userId}  and state=#{state}
+    </select>  
     <insert  id="insertDocumentInfo"  parameterType="com.words.admin.words.bean.DocumentInfo" useGeneratedKeys="true"  keyProperty="string">  
-         insert into documentInfo(name,originalName,uuid)  
-    			values(#{name},#{originalName},#{uuid}) 
+         insert into documentInfo(name,originalName,uuid,userId)  
+    			values(#{name},#{originalName},#{uuid},#{userId}) 
     </insert>   
     <update id="updateDocument"  parameterType="String">  
          update documentInfo set state=2 where uuid=#{uuid}

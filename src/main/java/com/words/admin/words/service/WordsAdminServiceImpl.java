@@ -31,11 +31,13 @@ public class WordsAdminServiceImpl implements WordsAdminService {
 	}
 
 	@Override
-	public String addDocumentInfo(HttpServletResponse response, String name, String newName, String orginalFileName) {
+	public String addDocumentInfo(HttpServletResponse response, int userId, String name, String newName,
+			String orginalFileName) {
 		DocumentInfo documentInfo = new DocumentInfo();
 		documentInfo.setName(name);
 		documentInfo.setOriginalName(orginalFileName);
 		documentInfo.setUuid(newName);
+		documentInfo.setUserId(userId);
 		try {
 			return String.valueOf(wordsAdminRepository.insertDocumentInfo(documentInfo));
 		} catch (Exception e) {
@@ -160,8 +162,34 @@ public class WordsAdminServiceImpl implements WordsAdminService {
 			for (WordsInfo item : words) {
 				jsonArray.add(item.getJsonInfo());
 			}
+			return jsonArray;
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "words list failed for database failed!");
+			return null;
+		}
+	}
+
+	@Override
+	public JsonArray listDocument(HttpServletResponse response, int userId, int state) {
+		// TODO Auto-generated method stub
+		DocumentInfo beanInfo = new DocumentInfo();
+		try {
+			beanInfo.setUserId(userId);
+			beanInfo.setState(state);
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "params has error for error message!");
+			return null;
+		}
+		try {
+			List<DocumentInfo> words = wordsAdminRepository.getDocuInfoList(beanInfo);
+			JsonArray jsonArray = new JsonArray();
+			for (DocumentInfo item : words) {
+				jsonArray.add(item.getJsonInfo());
+			}
 			if (jsonArray.size() == 0) {
-				RespUtils.responseJsonFailed(response, "words list is empty!");
+				RespUtils.responseJsonFailed(response, "docu list is empty!");
 				return null;
 			}
 			return jsonArray;
@@ -172,9 +200,4 @@ public class WordsAdminServiceImpl implements WordsAdminService {
 		}
 	}
 
-	@Override
-	public JsonArray listDocument(HttpServletResponse response, int parseInt, int parseInt2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

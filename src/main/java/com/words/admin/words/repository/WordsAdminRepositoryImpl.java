@@ -76,4 +76,17 @@ public class WordsAdminRepositoryImpl implements WordsAdminRepository {
 		}
 	}
 
+	@Override
+	public List<DocumentInfo> getDocuInfoList(DocumentInfo beanInfo) {
+		if (beanInfo.getState() == 5) {
+			try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+				return sqlSession.selectList("words.getDocuInfoListAll", beanInfo);
+			}
+		} else {
+			try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+				return sqlSession.selectList("words.getDocuInfoList", beanInfo);
+			}
+		}
+	}
+
 }
