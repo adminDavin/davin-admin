@@ -209,9 +209,10 @@ public class WordsAdminController {
 		RespUtils.responseJsonSuccess(response, result);
 	}
 
-	@RequestMapping("/")
+	@RequestMapping("/deleteWords")
 	public void deleteWords(HttpServletRequest request, HttpServletResponse response) {
 		int wordsId = 0;
+		r
 		try {
 			String wordsIds = request.getParameter("wordsId");
 			wordsId = Integer.parseInt(wordsIds);
