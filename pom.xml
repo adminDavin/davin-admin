@@ -113,10 +113,48 @@
 		    <artifactId>itext</artifactId>
 		    <version>4.2.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>1.8.0-beta0</version>
+		</dependency>
 
-		
-		
-		
+		<dependency>
+		    <groupId>org.jodconverter</groupId>
+		    <artifactId>jodconverter-core</artifactId>
+		    <version>4.1.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.jodconverter</groupId>
+		    <artifactId>jodconverter-local</artifactId>
+		    <version>4.1.0</version>
+		</dependency>
+				 
+		<!-- https://mvnrepository.com/artifact/org.libreoffice/jurt -->
+		<!-- https://mvnrepository.com/artifact/org.libreoffice/juh -->
+		<dependency>
+		    <groupId>org.libreoffice</groupId>
+		    <artifactId>juh</artifactId>
+		    <version>5.4.2</version>
+		</dependency>
+				
+		<dependency>
+		    <groupId>org.libreoffice</groupId>
+		    <artifactId>jurt</artifactId>
+		    <version>5.4.2</version>
+		</dependency>
+				
+		<dependency>
+		    <groupId>org.libreoffice</groupId>
+		    <artifactId>ridl</artifactId>
+		    <version>5.4.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.libreoffice</groupId>
+		    <artifactId>unoil</artifactId>
+		    <version>5.4.2</version>
+		</dependency>
     </dependencies>
   
   <repositories>
