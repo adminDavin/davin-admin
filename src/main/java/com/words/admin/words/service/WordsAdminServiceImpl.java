@@ -149,7 +149,7 @@ public class WordsAdminServiceImpl implements WordsAdminService {
 		WordsInfo wordsInfo = new WordsInfo();
 		try {
 			wordsInfo.setDocId(docId);
-			wordsInfo.setDocId(userId);
+			wordsInfo.setUserId(userId);
 			wordsInfo.setState(state);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -157,6 +157,7 @@ public class WordsAdminServiceImpl implements WordsAdminService {
 			return null;
 		}
 		try {
+
 			List<WordsInfo> words = wordsAdminRepository.getWordsInfoList(wordsInfo);
 			JsonArray jsonArray = new JsonArray();
 			for (WordsInfo item : words) {

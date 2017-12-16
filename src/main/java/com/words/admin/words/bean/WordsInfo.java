@@ -25,7 +25,11 @@ public class WordsInfo {
 		obj.put("initPage", initPage);
 		obj.put("pageNum", pageNum);
 		obj.put("textContent", textContent);
-		obj.put("createTime", createTime.toInstant().toString());
+		if (createTime == null) {
+			obj.put("createTime", "");
+		} else {
+			obj.put("createTime", createTime.toInstant().toString());
+		}
 		if (updateTime == null) {
 			obj.put("updateTime", "");
 		} else {

@@ -150,33 +150,38 @@ public class WordsAdminController {
 	public void listWords(HttpServletRequest request, HttpServletResponse response) {
 		String docId = request.getParameter(Constant.WORDSDOCID);
 		String userId = request.getParameter(Constant.USERID);
+		String state = request.getParameter(Constant.STATE);
 		if (userId == null) {
 			RespUtils.responseJsonFailed(response, "userId is required!");
 			return;
 		}
-		JsonArray wordsInfo = null;
-
-		try {
-			if (docId == null) {
-				wordsInfo = wordsAdminService.getListWords(response, Integer.parseInt(userId), 0, 5);
-			} else {
-				wordsInfo = wordsAdminService.getListWords(response, Integer.parseInt(userId), Integer.parseInt(docId),
-						0);
-			}
-		} catch (Exception e) {
-			RespUtils.responseJsonFailed(response, "params is invalied!");
-			return;
+		if (docId == null) {
+			docId = "0";
 		}
-		if (wordsInfo == null) {
-			return;
-		} else {
+		if (state == null) {
+			state = "5";
+		}
+		JsonArray wordsInfo = null;
+		System.out.println(userId + "  " + docId + " " + state);
+		try {
+			wordsInfo = wordsAdminService.getListWords(response, Integer.parseInt(userId), Integer.parseInt(docId),
+					Integer.parseInt(state));
 			JsonObject result = new JsonObject();
 			result.put("data", wordsInfo);
 			result.put("message", "success");
 			RespUtils.responseJsonSuccess(response, result);
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "params is invalied!");
+			return;
 		}
 	}
 
+	/**
+	 * 列出文档信息
+	 * 
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping("/listDocument")
 	public void listDocument(HttpServletRequest request, HttpServletResponse response) {
 		String state = request.getParameter(Constant.STATE);
@@ -192,17 +197,13 @@ public class WordsAdminController {
 			} else {
 				wordsInfo = wordsAdminService.listDocument(response, Integer.parseInt(userId), Integer.parseInt(state));
 			}
-		} catch (Exception e) {
-			RespUtils.responseJsonFailed(response, "params is invalied!");
-			return;
-		}
-		if (wordsInfo == null) {
-			return;
-		} else {
 			JsonObject result = new JsonObject();
 			result.put("data", wordsInfo);
 			result.put("message", "success");
 			RespUtils.responseJsonSuccess(response, result);
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "params is invalied!");
+			return;
 		}
 	}
 
@@ -212,6 +213,12 @@ public class WordsAdminController {
 		RespUtils.success(result);
 	}
 
+	/**
+	 * 添加wordsInfo
+	 * 
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping("/addWords")
 	public void addWords(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, String[]> wordsInfoMap = ValiedParams.checkKeyExist(response, request.getParameterMap(),
@@ -231,6 +238,12 @@ public class WordsAdminController {
 		RespUtils.responseJsonSuccess(response, result);
 	}
 
+	/**
+	 * 删除words Info
+	 * 
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping("/deleteWords")
 	public void deleteWords(HttpServletRequest request, HttpServletResponse response) {
 		int wordsId = 0;
