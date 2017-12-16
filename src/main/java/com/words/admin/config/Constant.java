@@ -38,7 +38,11 @@ public class Constant {
 
 	public static String PDFPATH = "C:\\Temp\\pdf-store\\";
 	public static final String LOCATION = "C:\\Temp\\";
+	public static final String OFFICEHOME = "C:\\Program Files (x86)\\OpenOffice 4";
+	public static final String OFFICEWORKER = "C:\\Temp\\office\\worker\\";
+	public static final String OFFICETEMP = "C:\\Temp\\office\\temp\\";
 	public static final String EXPORTDOC = "doc";
+	public static final String EXPORTPDF = "pdf";
 	public static final String[] DOCUTYTE = { "pdf", "doc" };
 
 	public static final long MAX_FILE_SIZE = 1000 * 1024 * 1024; // 5MB : Max file size.

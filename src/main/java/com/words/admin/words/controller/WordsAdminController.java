@@ -68,8 +68,8 @@ public class WordsAdminController {
 		}
 		String newName = UUID.randomUUID().toString().replace("-", "");
 		try {
-			ReadFile.readToFile(file, Paths.get(Constant.PDFPATH), newName + ".pdf");
-		} catch (IOException e) {
+			new ReadFile().readToFile(file, Paths.get(Constant.PDFPATH), newName);
+		} catch (Exception e) {
 			e.printStackTrace();
 			RespUtils.responseJsonFailed(response, "load file failed!");
 			return;
