@@ -84,8 +84,6 @@ public class ExportServiceDocImpl implements ExportService {
 			table.addCell(getCell(String.valueOf(index)));
 			table.addCell(getCell(words.getString(Constant.TEXTCONTENT)));
 
-			System.out.println(words);
-			System.out.println(words.getInteger(Constant.INITPAGE));
 			int init = words.getInteger(Constant.INITPAGE);
 			int page = words.getInteger(Constant.PAGENUM);
 			table.addCell(getCell(String.valueOf(page + init)));

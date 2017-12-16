@@ -16,7 +16,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import com.words.admin.config.ConfigInit;
-import com.words.admin.config.ConfigJodConverterAuto;
 import com.words.admin.config.ConfigResource;
 import com.words.admin.config.ConfigScheduler;
 import com.words.admin.config.ConfigService;
@@ -35,8 +34,8 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 		System.out.println("------------------------------------------------------------");
 
 		AnnotationConfigWebApplicationContext cxt = new AnnotationConfigWebApplicationContext();
-		cxt.register(ConfigInit.class, ConfigResource.class, ConfigService.class, Constant.class, ConfigScheduler.class,
-				ConfigJodConverterAuto.class);
+		cxt.register(ConfigInit.class, ConfigResource.class, ConfigService.class, Constant.class,
+				ConfigScheduler.class);
 		cxt.refresh();
 
 		DispatcherServlet servlet = new DispatcherServlet(cxt);

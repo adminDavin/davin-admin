@@ -130,31 +130,30 @@
 		    <artifactId>jodconverter-local</artifactId>
 		    <version>4.1.0</version>
 		</dependency>
-				 
-		<!-- https://mvnrepository.com/artifact/org.libreoffice/jurt -->
-		<!-- https://mvnrepository.com/artifact/org.libreoffice/juh -->
+		<!-- https://mvnrepository.com/artifact/org.openoffice/unoil -->
 		<dependency>
-		    <groupId>org.libreoffice</groupId>
-		    <artifactId>juh</artifactId>
-		    <version>5.4.2</version>
-		</dependency>
-				
-		<dependency>
-		    <groupId>org.libreoffice</groupId>
-		    <artifactId>jurt</artifactId>
-		    <version>5.4.2</version>
-		</dependency>
-				
-		<dependency>
-		    <groupId>org.libreoffice</groupId>
-		    <artifactId>ridl</artifactId>
-		    <version>5.4.2</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.libreoffice</groupId>
+		    <groupId>org.openoffice</groupId>
 		    <artifactId>unoil</artifactId>
-		    <version>5.4.2</version>
+		    <version>4.1.2</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.openoffice/juh -->
+		<dependency>
+		    <groupId>org.openoffice</groupId>
+		    <artifactId>juh</artifactId>
+		    <version>4.1.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.openoffice/ridl -->
+		<dependency>
+		    <groupId>org.openoffice</groupId>
+		    <artifactId>ridl</artifactId>
+		    <version>4.1.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.openoffice/jurt -->
+		<dependency>
+		    <groupId>org.openoffice</groupId>
+		    <artifactId>jurt</artifactId>
+		    <version>4.1.2</version>
+		</dependency> 		  
     </dependencies>
   
   <repositories>

@@ -236,7 +236,6 @@ public class WordsAdminController {
 		int wordsId = 0;
 
 		Map<String, String[]> tmp = request.getParameterMap();
-		System.out.println(tmp.size());
 		for (Entry<String, String[]> item : tmp.entrySet()) {
 			System.out.println(item.getKey());
 			System.out.println(item.getValue());

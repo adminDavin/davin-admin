@@ -45,7 +45,7 @@
         FROM  
         documentInfo d where userId=#{userId}  and state=#{state}
     </select>  
-    <insert  id="insertDocumentInfo"  parameterType="com.words.admin.words.bean.DocumentInfo" useGeneratedKeys="true"  keyProperty="string">  
+    <insert  id="insertDocumentInfo"  parameterType="com.words.admin.words.bean.DocumentInfo" useGeneratedKeys="true"  keyProperty="docId">  
          insert into documentInfo(name,originalName,uuid,userId)  
     			values(#{name},#{originalName},#{uuid},#{userId}) 
     </insert>   
@@ -84,7 +84,7 @@
         FROM  
         wordsInfo w where docId=#{docId}  and userId=#{userId}
     </select>   
-     <insert  id="insertWordsInfo"  parameterType="com.words.admin.words.bean.WordsInfo" useGeneratedKeys="true"  keyProperty="string">  
+     <insert  id="insertWordsInfo"  parameterType="com.words.admin.words.bean.WordsInfo" useGeneratedKeys="true"  keyProperty="wordsId">  
          insert into wordsInfo(docId,userId,textContent,initPage,pageNum)  
     			values(#{docId},#{userId},#{textContent},#{initPage},#{pageNum}) 
     </insert> 

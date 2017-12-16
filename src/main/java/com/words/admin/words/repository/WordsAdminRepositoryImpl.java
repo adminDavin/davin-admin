@@ -25,9 +25,9 @@ public class WordsAdminRepositoryImpl implements WordsAdminRepository {
 	@Override
 	public int insertDocumentInfo(DocumentInfo documentInfo) {
 		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-			int docuId = sqlSession.insert("words.insertDocumentInfo", documentInfo);
+			sqlSession.insert("words.insertDocumentInfo", documentInfo);
 			sqlSession.commit();
-			return docuId;
+			return documentInfo.getDocId();
 		}
 	}
 
@@ -41,9 +41,9 @@ public class WordsAdminRepositoryImpl implements WordsAdminRepository {
 	@Override
 	public int insertWordsInfo(WordsInfo wordsInfo) {
 		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-			int docuId = sqlSession.insert("words.insertWordsInfo", wordsInfo);
+			sqlSession.insert("words.insertWordsInfo", wordsInfo);
 			sqlSession.commit();
-			return docuId;
+			return wordsInfo.getWordsId();
 		}
 	}
 
