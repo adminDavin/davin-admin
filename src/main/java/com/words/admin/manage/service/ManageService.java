@@ -9,6 +9,8 @@ import com.words.admin.manage.bean.RoleInfoBean;
 import com.words.admin.manage.bean.ServiceInfoBean;
 import com.words.admin.manage.bean.UserInfoBean;
 
+import jodd.json.JsonObject;
+
 public interface ManageService {
 
 	public boolean islogined();
@@ -36,5 +38,9 @@ public interface ManageService {
 	public RoleInfoBean selectRoleInfoById(HttpServletResponse response, int roleId);
 
 	public String updateRoleInfo(HttpServletResponse response, RoleInfoBean item, Map<String, String[]> param);
+
+	public String addLoginInfo(HttpServletResponse response, String loginName, String password);
+
+	public JsonObject getloginInfoByAuth(HttpServletResponse response, String loginName, String string);
 
 }

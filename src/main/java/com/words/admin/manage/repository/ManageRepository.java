@@ -35,4 +35,13 @@ public interface ManageRepository {
 	public RoleInfoBean getRoleInfoById(int roleId);
 
 	public int updateRoleInfo(RoleInfoBean item);
+
+	public Map<String, Object> getloginInfoByAuth(Map<String, Object> params);
+
+	public int insertSimpleUserInfo(String email);
+
+	public int insertloginInfo(Map<String, Object> params);
+
+	public Map<String, Object> getloginInfoByLoginName(Map<String, Object> params);
+
 }

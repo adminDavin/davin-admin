@@ -8,6 +8,38 @@
         u.app_name AS "userName"    
     </sql>  
     
+    
+    <sql id="loginInfoColumns">  
+		u.loginId AS "loginId",    
+		u.loginName AS "loginName",    
+	    u.password AS "password",      
+	    u.userId AS "userId",    
+		u.oldPassowd AS "oldPassowd",    
+		u.state AS "state",
+		u.createDate AS "createDate",    
+		u.updateDate AS "updateDate"
+   </sql>  
+    
+    <!-- 根据 userName 查询 -->  
+    <select id="getloginInfoByAuth" parameterType="map" resultType="hashmap">  
+        SELECT  
+        <include refid="loginInfoColumns" />  
+        FROM  
+        logininfo u   
+        where loginName=#{loginName} and password=#{password}
+    </select>  
+    <!-- 根据 userName 查询 -->  
+    <select id="getloginInfoByLoginName" parameterType="map" resultType="hashmap">  
+        SELECT  
+        <include refid="loginInfoColumns" />  
+        FROM  
+        logininfo u  where loginName=#{loginName}
+    </select>  
+    
+    <insert  id="insertloginInfo"  parameterType="Map" useGeneratedKeys="true"  keyProperty="string">  
+         insert into logininfo( password,loginName,userId,state)  
+    			values( #{password},#{loginName},#{userId},0) 
+    </insert>  
      <!-- 根据 userName 查询 -->  
     <select id="getAppName" resultType="hashmap">  
         SELECT  
@@ -30,6 +62,7 @@
 		u.applyDate   AS "applyDate",
 		u.acceptDate  AS "acceptDate",
 		u.accepterId  AS "accepterId",
+		u.birthDate  AS "birthDate",
 		u.remark      AS "remark" 
     </sql>
      
@@ -54,6 +87,11 @@
          insert into UserInfo(name, namepin, organize, sex, email, phone, zoneqq, remark, address,acceptDate)  
     			values(#{name},#{namePin},#{organize},#{sex},#{email},#{phone},#{zoneqq},#{remark},#{address}, null) 
     </insert>  
+    <insert  id="insertSimpleUserInfo"  parameterType="string" useGeneratedKeys="true"  keyProperty="string">  
+         insert into UserInfo( email)  
+    			values( #{email}) 
+    </insert>  
+    
      <update id="updateUserInfo"  parameterType="com.words.admin.manage.bean.UserInfoBean">
 		 update UserInfo SET name=#{name},namepin=#{namePin},organize=#{organize},
 		        phone=#{phone},zoneqq=#{zoneqq},remark=#{remark},address=#{address},
@@ -119,6 +157,7 @@
         <include refid="serviceinfoColumns" />  
         FROM  ServiceInfo s  
     </select> 
+    
     
       
 </mapper>

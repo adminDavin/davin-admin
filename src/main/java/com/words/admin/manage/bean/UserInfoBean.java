@@ -16,6 +16,7 @@ public class UserInfoBean {
 	private String address;
 	private int state;
 	private Timestamp applyDate;
+	private Timestamp birthDate;
 	private Timestamp acceptDate;
 	private Integer accepterId;
 	private String remark;
@@ -31,6 +32,7 @@ public class UserInfoBean {
 		user.put("phone", phone);
 		user.put("zoneqq", zoneqq);
 		user.put("address", address);
+		user.put("birthDate", birthDate.toInstant().toString());
 		user.put("applyDate", applyDate.toInstant().toString());
 		user.put("acceptDate", acceptDate.toInstant().toString());
 		user.put("accepterId", accepterId);
@@ -148,6 +150,14 @@ public class UserInfoBean {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public Timestamp getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(Timestamp birthDate) {
+		this.birthDate = birthDate;
 	}
 
 }

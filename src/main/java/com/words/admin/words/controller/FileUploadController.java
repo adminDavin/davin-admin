@@ -1,6 +1,5 @@
 package com.words.admin.words.controller;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -23,8 +22,8 @@ public class FileUploadController {
 		System.out.println(file.getOriginalFilename());
 		Path saveDir = Paths.get(rootPath);
 		try {
-			ReadFile.readToFile(file, saveDir, file.getOriginalFilename());
-		} catch (IOException e) {
+			new ReadFile().readToFile(file, saveDir, file.getOriginalFilename());
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -38,9 +37,9 @@ public class FileUploadController {
 		try {
 			for (MultipartFile file : files) {
 				Path saveDir = Paths.get(rootPath);
-				ReadFile.readToFile(file, saveDir, file.getOriginalFilename());
+				new ReadFile().readToFile(file, saveDir, file.getOriginalFilename());
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

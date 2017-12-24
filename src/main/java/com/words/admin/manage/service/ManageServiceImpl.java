@@ -1,7 +1,10 @@
 package com.words.admin.manage.service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +19,8 @@ import com.words.admin.manage.bean.RoleInfoBean;
 import com.words.admin.manage.bean.ServiceInfoBean;
 import com.words.admin.manage.bean.UserInfoBean;
 import com.words.admin.manage.repository.ManageRepository;
+
+import jodd.json.JsonObject;
 
 @SessionScope
 @Service("userInfoService")
@@ -250,6 +255,83 @@ public class ManageServiceImpl implements ManageService {
 			RespUtils.responseJsonFailed(response, "user is register failed for error message!");
 			return null;
 		}
+	}
+
+	@Override
+	public String addLoginInfo(HttpServletResponse response, String loginName, String password) {
+		int userId = 0;
+		String email = loginName;
+		try {
+			UserInfoBean user = manageRepository.getUserInfoByEmail(email);
+			if (user == null) {
+				userId = manageRepository.insertSimpleUserInfo(email);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "user is register failed for insert database!");
+			return null;
+		}
+
+		Map<String, Object> params = new ConcurrentHashMap<String, Object>(3);
+		params.put(Constant.USERID, userId);
+		params.put(Constant.LOGINNAME, loginName);
+		params.put(Constant.PASSWORD, password);
+		try {
+			Map<String, Object> user = manageRepository.getloginInfoByLoginName(params);
+			if (user == null) {
+				int loginId = manageRepository.insertloginInfo(params);
+				return String.valueOf(loginId);
+			} else {
+				RespUtils.responseJsonFailed(response, "user is register failed for email is exists!");
+				return null;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "user is register failed for insert database!");
+			return null;
+		}
+
+	}
+
+	@Override
+	public JsonObject getloginInfoByAuth(HttpServletResponse response, String loginName, String password) {
+		Map<String, Object> params = new ConcurrentHashMap<String, Object>(3);
+		params.put(Constant.LOGINNAME, loginName);
+		params.put(Constant.PASSWORD, password);
+		try {
+			Map<String, Object> user = manageRepository.getloginInfoByAuth(params);
+			if (user == null) {
+				RespUtils.responseJsonFailed(response, "not register or password is error!");
+				return null;
+			}
+			System.out.println(user.size());
+			JsonObject login = new JsonObject();
+			for (Entry<String, Object> item : user.entrySet()) {
+				String key = item.getKey();
+				System.out.println(key);
+
+				if (Constant.CREATEDATE.equals(key) || Constant.UPDATEDATE.equals(key)
+						|| Constant.EXPIREDATE.equals(key)) {
+					Timestamp value = (Timestamp) item.getValue();
+					if (value != null) {
+						login.put(item.getKey(), value.toInstant().toString());
+					} else {
+						login.put(item.getKey(), "");
+					}
+				} else if (Constant.USERID.equals(key) || Constant.LOGINID.equals(key) || Constant.STATE.equals(key)) {
+					login.put(item.getKey(), String.valueOf(item.getValue()));
+				} else {
+					login.put(item.getKey(), (String) (item.getValue()));
+
+				}
+			}
+			return login;
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "user is register failed for insert database!");
+			return null;
+		}
+
 	}
 
 }

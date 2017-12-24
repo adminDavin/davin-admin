@@ -123,4 +123,37 @@ public class ManageRepositoryImpl implements ManageRepository {
 		}
 
 	}
+
+	@Override
+	public Map<String, Object> getloginInfoByAuth(Map<String, Object> params) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			return sqlSession.selectOne("manage.getloginInfoByAuth", params);
+		}
+	}
+
+	@Override
+	public Map<String, Object> getloginInfoByLoginName(Map<String, Object> params) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			return sqlSession.selectOne("manage.getloginInfoByLoginName", params);
+		}
+	}
+
+	@Override
+	public int insertSimpleUserInfo(String email) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			int userid = sqlSession.insert("manage.insertSimpleUserInfo", email);
+			sqlSession.commit();
+			return userid;
+		}
+	}
+
+	@Override
+	public int insertloginInfo(Map<String, Object> params) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			int userid = sqlSession.insert("manage.insertloginInfo", params);
+			sqlSession.commit();
+			return userid;
+		}
+	}
+
 }

@@ -13,7 +13,10 @@ public class Constant {
 	public static String ZONEQQ = "qq";
 	public static String REMARK = "remark";
 	public static String ADDRESS = "address";
-	public static String[] USERINFO = { NAME, NAMEPIN, ORGANIZE, SEX, EMAIL, PHONE, ZONEQQ, REMARK, ADDRESS };
+	public static String BIRTHDATE = "birthDate";
+
+	public static String[] USERINFO = { NAME, NAMEPIN, ORGANIZE, SEX, EMAIL, PHONE, ZONEQQ, REMARK, ADDRESS,
+			BIRTHDATE };
 
 	public static String ROLENAME = "name";
 	public static String ROLEDESC = "desc";
@@ -35,12 +38,18 @@ public class Constant {
 	public static String SERVICESTATE = "state";
 	public static String CREATEDATE = "createDate";
 	public static String MODIFYDATE = "modifyDate";
+	public static String UPDATEDATE = "updateDate";
+	public static String EXPIREDATE = "ExpireDate";
 
-	public static String PDFPATH = "C:\\Temp\\pdf-store\\";
-	public static final String LOCATION = "C:\\Temp\\";
+	public static String PDFPATH = "E:\\Temp\\pdf-store\\";
+
+	public static String LOGINNAME = "loginName";
+
+	public static String PASSWORD = "password";
+	public static final String LOCATION = "E:\\Temp\\";
 	public static final String OFFICEHOME = "C:\\Program Files (x86)\\OpenOffice 4";
-	public static final String OFFICEWORKER = "C:\\Temp\\office\\worker\\";
-	public static final String OFFICETEMP = "C:\\Temp\\office\\temp\\";
+	public static final String OFFICEWORKER = "E:\\Temp\\office\\worker\\";
+	// public static final String OFFICETEMP = "E:\\Temp\\office\\temp\\";
 	public static final String EXPORTDOC = "doc";
 	public static final String EXPORTPDF = "pdf";
 	public static final String[] DOCUTYTE = { "pdf", "doc" };
@@ -49,5 +58,7 @@ public class Constant {
 	public static final long MAX_REQUEST_SIZE = 1000 * 1024 * 1024; // 20MB : Total request size containing Multi part
 	public static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk
 	public static final int FILESAVEDAYS = 1; // 文件保留时间
+
+	public static final String LOGINID = "loginId";
 
 }

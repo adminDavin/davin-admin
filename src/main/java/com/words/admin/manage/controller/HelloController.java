@@ -1,5 +1,6 @@
 package com.words.admin.manage.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -7,6 +8,7 @@ import java.util.concurrent.Callable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -97,22 +99,85 @@ public class HelloController {
 		RespUtils.responseJsonSuccess(response, result);
 	}
 
-	@RequestMapping("/login")
-	public void login(HttpServletRequest request, HttpServletResponse response) {
-		Map<String, String[]> userinfoMap = ValiedParams.checkKeyExist(response, request.getParameterMap(),
-				Constant.USERINFO);
-		if (userinfoMap == null) {
-			return;
-		}
-		String userId = manageService.addUserInfo(response, userinfoMap);
-		if (userId == null) {
-			return;
+	private boolean checkLoginParams(String loginName, String passwordBase, HttpServletResponse response) {
+		// String loginName = request.getParameter(Constant.LOGINNAME);
+		// String passwordBase = request.getParameter(Constant.PASSWORD);
+		// System.out.println(loginName + " " + passwordBase);
+		// 745854511@qq.com UUFad3N4MTEyNA==
+		// loginName = "7458545111@qq.com";
+		// passwordBase = "UUFad3N4MTEyNA==";
+		// String password = new
+		// String(Base64.decodeBase64(passwordBase.getBytes("UTF-8")));
+		try {
+			if (loginName == null) {
+				RespUtils.responseJsonFailed(response, "loginName is required!");
+				return false;
+			}
+			if (passwordBase == null) {
+				RespUtils.responseJsonFailed(response, "password is required!");
+				return false;
+			}
+
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "password is invalied!");
+			e.printStackTrace();
+			return false;
 		}
 
+		return true;
+	}
+
+	@RequestMapping("/simpleRegist")
+	public void simpleRegist(HttpServletRequest request, HttpServletResponse response) {
+		String loginName = request.getParameter(Constant.LOGINNAME);
+		String password = request.getParameter(Constant.PASSWORD);
+		if (!checkLoginParams(loginName, password, response)) {
+			return;
+		}
+		String loginId;
+		try {
+			loginId = manageService.addLoginInfo(response, loginName,
+					new String(Base64.decodeBase64(password.getBytes("UTF-8"))));
+		} catch (UnsupportedEncodingException e) {
+			return;
+		}
+		if (loginId == null) {
+			return;
+		}
 		JsonObject result = new JsonObject();
 		JsonObject data = new JsonObject();
-		data.put("userId", userId);
+		data.put("loginId", loginId);
 		result.put("data", data);
+		result.put("message", "user is register success");
+		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/login")
+	public void login(HttpServletRequest request, HttpServletResponse response) {
+		String loginName = request.getParameter(Constant.LOGINNAME);
+		String password = request.getParameter(Constant.PASSWORD);
+		if (!checkLoginParams(loginName, password, response)) {
+			return;
+		}
+		JsonObject login;
+		try {
+			login = manageService.getloginInfoByAuth(response, loginName,
+					new String(Base64.decodeBase64(password.getBytes("UTF-8"))));
+		} catch (UnsupportedEncodingException e) {
+			return;
+		}
+		String key = login.getString(Constant.LOGINNAME) + "(#)" + login.getString(Constant.USERID) + "(#)"
+				+ login.getString(Constant.PASSWORD) + "(#)" + login.getString(Constant.STATE);
+
+		try {
+			login.put("key", jodd.util.Base64.encodeToString(key.getBytes("UTF-8")));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		login.remove(Constant.PASSWORD);
+		login.remove(Constant.STATE);
+		JsonObject result = new JsonObject();
+		result.put("data", login);
 		result.put("message", "user is register success");
 		RespUtils.responseJsonSuccess(response, result);
 	}
@@ -132,6 +197,26 @@ public class HelloController {
 
 		result.put("data", data);
 		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/getUserListByUserId")
+	public void getUserListByUserId(HttpServletRequest request, HttpServletResponse response) {
+		String userId = request.getParameter(Constant.USERID);
+		System.out.println(userId);
+		if (userId == null) {
+			RespUtils.responseJsonFailed(response, "userId is required!");
+			return;
+		}
+		try {
+			UserInfoBean item = manageService.selectUserInfoById(response, Integer.parseInt(userId));
+			JsonObject result = new JsonObject();
+			result.put("data", item.getJsonInfo());
+			result.put("message", "user is update success");
+			RespUtils.responseJsonSuccess(response, result);
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "params is invalied!");
+			return;
+		}
 	}
 
 	@RequestMapping("/getRoleList")
