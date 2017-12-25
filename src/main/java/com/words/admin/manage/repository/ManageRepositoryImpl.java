@@ -141,9 +141,11 @@ public class ManageRepositoryImpl implements ManageRepository {
 	@Override
 	public int insertSimpleUserInfo(String email) {
 		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-			int userid = sqlSession.insert("manage.insertSimpleUserInfo", email);
+			UserInfoBean user = new UserInfoBean();
+			user.setEmail(email);
+			sqlSession.insert("manage.insertSimpleUserInfo", user);
 			sqlSession.commit();
-			return userid;
+			return user.getUserId();
 		}
 	}
 

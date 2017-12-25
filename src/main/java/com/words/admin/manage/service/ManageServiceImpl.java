@@ -265,7 +265,8 @@ public class ManageServiceImpl implements ManageService {
 			UserInfoBean user = manageRepository.getUserInfoByEmail(email);
 			if (user == null) {
 				userId = manageRepository.insertSimpleUserInfo(email);
-			}
+			} 
+			// System.out.println(user.getJsonInfo());
 		} catch (Exception e) {
 			e.printStackTrace();
 			RespUtils.responseJsonFailed(response, "user is register failed for insert database!");
@@ -279,8 +280,8 @@ public class ManageServiceImpl implements ManageService {
 		try {
 			Map<String, Object> user = manageRepository.getloginInfoByLoginName(params);
 			if (user == null) {
-				int loginId = manageRepository.insertloginInfo(params);
-				return String.valueOf(loginId);
+				manageRepository.insertloginInfo(params);
+				return String.valueOf(userId);
 			} else {
 				RespUtils.responseJsonFailed(response, "user is register failed for email is exists!");
 				return null;

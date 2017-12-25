@@ -134,19 +134,28 @@ public class HelloController {
 		if (!checkLoginParams(loginName, password, response)) {
 			return;
 		}
-		String loginId;
+		String userId;
 		try {
-			loginId = manageService.addLoginInfo(response, loginName,
+			userId = manageService.addLoginInfo(response, loginName,
 					new String(Base64.decodeBase64(password.getBytes("UTF-8"))));
 		} catch (UnsupportedEncodingException e) {
 			return;
 		}
-		if (loginId == null) {
+		if (userId == null) {
 			return;
 		}
+
+		String key = loginName + "(#)" + userId + "(#)" + password;
 		JsonObject result = new JsonObject();
 		JsonObject data = new JsonObject();
-		data.put("loginId", loginId);
+		data.put("userId", userId);
+		try {
+			data.put("key", jodd.util.Base64.encodeToString(key.getBytes("UTF-8")));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		data.put("loginName", loginName);
 		result.put("data", data);
 		result.put("message", "user is register success");
 		RespUtils.responseJsonSuccess(response, result);

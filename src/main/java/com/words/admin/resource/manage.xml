@@ -87,7 +87,7 @@
          insert into UserInfo(name, namepin, organize, sex, email, phone, zoneqq, remark, address,acceptDate)  
     			values(#{name},#{namePin},#{organize},#{sex},#{email},#{phone},#{zoneqq},#{remark},#{address}, null) 
     </insert>  
-    <insert  id="insertSimpleUserInfo"  parameterType="string" useGeneratedKeys="true"  keyProperty="string">  
+    <insert  id="insertSimpleUserInfo"  parameterType="com.words.admin.manage.bean.UserInfoBean" useGeneratedKeys="true"  keyProperty="userId">  
          insert into UserInfo( email)  
     			values( #{email}) 
     </insert>  
