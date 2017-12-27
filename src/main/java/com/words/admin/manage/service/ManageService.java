@@ -43,4 +43,6 @@ public interface ManageService {
 
 	public JsonObject getloginInfoByAuth(HttpServletResponse response, String loginName, String string);
 
+	public String updateUserInfo(HttpServletResponse response, UserInfoBean item);
+
 }

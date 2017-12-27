@@ -193,6 +193,18 @@ public class ManageServiceImpl implements ManageService {
 	}
 
 	@Override
+	public String updateUserInfo(HttpServletResponse response, UserInfoBean item) {
+		try {
+			manageRepository.updateUserInfo(item);
+			return String.valueOf(item.getUserId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "user is register failed for error message!");
+			return null;
+		}
+	}
+
+	@Override
 	public String updateUserInfo(HttpServletResponse response, UserInfoBean item, Map<String, String[]> param) {
 		try {
 			if (param.containsKey(Constant.NAME)) {
@@ -265,7 +277,7 @@ public class ManageServiceImpl implements ManageService {
 			UserInfoBean user = manageRepository.getUserInfoByEmail(email);
 			if (user == null) {
 				userId = manageRepository.insertSimpleUserInfo(email);
-			} 
+			}
 			// System.out.println(user.getJsonInfo());
 		} catch (Exception e) {
 			e.printStackTrace();

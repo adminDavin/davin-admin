@@ -248,8 +248,11 @@ public class HelloController {
 
 	@RequestMapping("/updateUserInfo")
 	public void updateUserInfo(HttpServletRequest request, HttpServletResponse response) {
-		Map<String, String[]> param = ValiedParams.checkKeyModify(response, request.getParameterMap(),
-				Constant.USERINFO);
+		Map<String, String[]> param = ValiedParams.checkKeyExist(response, request.getParameterMap(),
+				Constant.UPDATEUSERINFO);
+		if (param == null) {
+			return;
+		}
 		int userId = 0;
 		try {
 			userId = Integer.parseInt(request.getParameter(Constant.USERID));
@@ -258,7 +261,12 @@ public class HelloController {
 			return;
 		}
 		UserInfoBean item = manageService.selectUserInfoById(response, userId);
-		String results = manageService.updateUserInfo(response, item, param);
+		item.setNamePin(param.get(Constant.NAMEPIN)[0]);
+		item.setOrganize(param.get(Constant.ORGANIZE)[0]);
+		item.setRemark(param.get(Constant.REMARK)[0]);
+		item.setAddress(param.get(Constant.ADDRESS)[0]);
+		// item.setNamePin(param.get(Constant.BIRTHDATE)[0]);
+		String results = manageService.updateUserInfo(response, item);
 		JsonObject result = new JsonObject();
 		JsonObject data = new JsonObject();
 		data.put("userId", results);

@@ -6,7 +6,7 @@ public class Constant {
 
 	public static String NAME = "name";
 	public static String NAMEPIN = "namepin";
-	public static String ORGANIZE = "Organize";
+	public static String ORGANIZE = "organize";
 	public static String SEX = "sex";
 	public static String EMAIL = "email";
 	public static String PHONE = "phone";
@@ -17,6 +17,7 @@ public class Constant {
 
 	public static String[] USERINFO = { NAME, NAMEPIN, ORGANIZE, SEX, EMAIL, PHONE, ZONEQQ, REMARK, ADDRESS,
 			BIRTHDATE };
+	public static String[] UPDATEUSERINFO = { NAMEPIN, ORGANIZE, PHONE, REMARK, ADDRESS, BIRTHDATE };
 
 	public static String ROLENAME = "name";
 	public static String ROLEDESC = "desc";
