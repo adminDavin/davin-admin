@@ -25,7 +25,7 @@ public class ConfigJodConverterAuto {
 
 	public ConfigJodConverterAuto() {
 		this.properties = new PropertiesJodConverter();
-		System.out.println(env.containsProperty("jodconverter.officeHome"));
+		// System.out.println(env.containsProperty("jodconverter.officeHome"));
 		this.properties.setOfficeHome(env.getProperty("jodconverter.officeHome"));
 		// this.properties.setEnabled(true);
 		// this.properties.setPortNumbers(env.getProperty("jodconverter.portNumbers"));

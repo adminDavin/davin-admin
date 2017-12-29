@@ -45,4 +45,12 @@ public interface ManageService {
 
 	public String updateUserInfo(HttpServletResponse response, UserInfoBean item);
 
+	public String updateSingleUserInfo(HttpServletResponse response, UserInfoBean item, Map<String, String[]> param);
+
+	public String updateloginPass(HttpServletResponse response, Map<String, Object> param);
+
+	public JsonObject getLogininfoByName(HttpServletResponse response, String loginName);
+
+	public boolean insertVariCode(HttpServletResponse response, String loginName, String variCode);
+
 }

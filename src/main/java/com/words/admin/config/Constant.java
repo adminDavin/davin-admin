@@ -17,7 +17,8 @@ public class Constant {
 
 	public static String[] USERINFO = { NAME, NAMEPIN, ORGANIZE, SEX, EMAIL, PHONE, ZONEQQ, REMARK, ADDRESS,
 			BIRTHDATE };
-	public static String[] UPDATEUSERINFO = { NAMEPIN, ORGANIZE, PHONE, REMARK, ADDRESS, BIRTHDATE };
+	public static String[] UPDATEUSERINFO = { NAME, NAMEPIN, ORGANIZE, PHONE, REMARK, ADDRESS, BIRTHDATE, SEX };
+	public static String[] UPDATEUSERINFOSINGLE = { ORGANIZE, PHONE, REMARK, ADDRESS };
 
 	public static String ROLENAME = "name";
 	public static String ROLEDESC = "desc";
@@ -61,5 +62,7 @@ public class Constant {
 	public static final int FILESAVEDAYS = 1; // 文件保留时间
 
 	public static final String LOGINID = "loginId";
+
+	public static final String EMAILMESSAGEFORPASS = "于2017年8月25号9:25:25发起了忘记密码请求，请确保是本人操作，验证码是:";
 
 }

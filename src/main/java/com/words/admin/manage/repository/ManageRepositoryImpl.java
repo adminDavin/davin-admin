@@ -3,12 +3,14 @@ package com.words.admin.manage.repository;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.words.admin.config.Constant;
 import com.words.admin.manage.bean.RoleInfoBean;
 import com.words.admin.manage.bean.ServiceInfoBean;
 import com.words.admin.manage.bean.UserInfoBean;
@@ -155,6 +157,67 @@ public class ManageRepositoryImpl implements ManageRepository {
 			int userid = sqlSession.insert("manage.insertloginInfo", params);
 			sqlSession.commit();
 			return userid;
+		}
+	}
+
+	@Override
+	public int updateLoginInfoState(Map<String, Object> params) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			int result = sqlSession.update("manage.updateLoginInfoState", params);
+			sqlSession.commit();
+			return result;
+		}
+	}
+
+	@Override
+	public Map<String, Object> getloginInfoByUserId(Map<String, Object> params) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			return sqlSession.selectOne("manage.getloginInfoByUserId", params);
+		}
+	}
+
+	@Override
+	public boolean checkVariCode(String loginName, String vairiCode) {
+		Map<String, Object> params = new ConcurrentHashMap<String, Object>(3);
+		params.put(Constant.LOGINNAME, loginName);
+		params.put("vairiCode", vairiCode);
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			Map<String, Object> vari = sqlSession.selectOne("manage.getloginInfoByUserId", params);
+			if (vari == null) {
+				return false;
+			} else {
+				sqlSession.update("manage.updateVariCode", params);
+				sqlSession.commit();
+				return true;
+			}
+		}
+	}
+
+	@Override
+	public void updateloginPass(String loginName, String newPass) {
+		Map<String, Object> params = new ConcurrentHashMap<String, Object>(3);
+		params.put(Constant.LOGINNAME, loginName);
+		params.put(Constant.PASSWORD, newPass);
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			sqlSession.update("manage.updateLoginPass", params);
+			sqlSession.commit();
+		}
+
+	}
+
+	@Override
+	public void insertVariCode(Map<String, Object> params) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			sqlSession.insert("manage.insertVariCode", params);
+			sqlSession.commit();
+		}
+	}
+
+	@Override
+	public void updateVariCodeState(Map<String, Object> params) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			sqlSession.insert("manage.updateVariCodeState", params);
+			sqlSession.commit();
 		}
 	}
 

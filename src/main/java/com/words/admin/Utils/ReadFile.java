@@ -26,7 +26,7 @@ public class ReadFile {
 			// System.out.println(file.getOriginalFilename());
 			// Files.write(saveFile, file.getBytes());
 			File saveName = new File(saveFile.toString());
-			System.out.println(saveFile.toString());
+			// System.out.println(saveFile.toString());
 			file.transferTo(saveName);
 			if (!Constant.EXPORTPDF.equals(suffix)) {
 				Path otherFile = Paths.get(saveDir.toString(), newName + "." + Constant.EXPORTPDF);
@@ -40,7 +40,7 @@ public class ReadFile {
 		if (!file.isEmpty()) {
 			Path saveFile = Paths.get(saveDir.toString(), file.getOriginalFilename());
 			Files.write(saveFile, file.getBytes());
-			System.out.println("finished");
+			// System.out.println("finished");
 		}
 	}
 

@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -248,11 +247,11 @@ public class WordsAdminController {
 	public void deleteWords(HttpServletRequest request, HttpServletResponse response) {
 		int wordsId = 0;
 
-		Map<String, String[]> tmp = request.getParameterMap();
-		for (Entry<String, String[]> item : tmp.entrySet()) {
-			System.out.println(item.getKey());
-			System.out.println(item.getValue());
-		}
+		// Map<String, String[]> tmp = request.getParameterMap();
+		// for (Entry<String, String[]> item : tmp.entrySet()) {
+		// // System.out.println(item.getKey());
+		// // System.out.println(item.getValue());
+		// }
 		try {
 			String wordsIds = request.getParameter("wordsId");
 			wordsId = Integer.parseInt(wordsIds);

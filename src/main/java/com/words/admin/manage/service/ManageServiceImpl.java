@@ -1,6 +1,7 @@
 package com.words.admin.manage.service;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,7 +33,7 @@ public class ManageServiceImpl implements ManageService {
 
 	@PostConstruct
 	public void afterInit() {
-		System.out.println("Init UserInfoService success!");
+		// System.out.println("Init UserInfoService success!");
 	}
 
 	@Override
@@ -195,7 +196,20 @@ public class ManageServiceImpl implements ManageService {
 	@Override
 	public String updateUserInfo(HttpServletResponse response, UserInfoBean item) {
 		try {
+			Map<String, Object> params = new HashMap<String, Object>(2);
+			params.put("userId", item.getUserId());
+			Map<String, Object> login = manageRepository.getloginInfoByUserId(params);
+			if (login == null) {
+				RespUtils.responseJsonFailed(response, "user is update failed for login is empty!");
+				return null;
+			}
+			if ((int) login.get(Constant.STATE) == 0) {
+				params.put("state", 6);
+				item.setState(6);
+			}
 			manageRepository.updateUserInfo(item);
+			params.put("state", login.get(Constant.STATE));
+			manageRepository.updateLoginInfoState(params);
 			return String.valueOf(item.getUserId());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -317,11 +331,10 @@ public class ManageServiceImpl implements ManageService {
 				RespUtils.responseJsonFailed(response, "not register or password is error!");
 				return null;
 			}
-			System.out.println(user.size());
 			JsonObject login = new JsonObject();
 			for (Entry<String, Object> item : user.entrySet()) {
 				String key = item.getKey();
-				System.out.println(key);
+				// System.out.println(key);
 
 				if (Constant.CREATEDATE.equals(key) || Constant.UPDATEDATE.equals(key)
 						|| Constant.EXPIREDATE.equals(key)) {
@@ -343,6 +356,102 @@ public class ManageServiceImpl implements ManageService {
 			e.printStackTrace();
 			RespUtils.responseJsonFailed(response, "user is register failed for insert database!");
 			return null;
+		}
+
+	}
+
+	@Override
+	public String updateSingleUserInfo(HttpServletResponse response, UserInfoBean item, Map<String, String[]> param) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String updateloginPass(HttpServletResponse response, Map<String, Object> param) {
+		String oldPass = (String) param.get("oldPass");
+		String vairiCode = (String) param.get("vairiCode");
+		String newPass = (String) param.get("newPass");
+		String loginName = (String) param.get("loginName");
+		boolean modifyFlag = false;
+		try {
+			if (vairiCode != null) {
+				modifyFlag = manageRepository.checkVariCode(loginName, vairiCode);
+			} else if (oldPass != null) {
+				Map<String, Object> params = new ConcurrentHashMap<String, Object>(3);
+				params.put(Constant.LOGINNAME, loginName);
+				params.put(Constant.PASSWORD, oldPass);
+				Map<String, Object> user = manageRepository.getloginInfoByAuth(params);
+				if (user != null) {
+					modifyFlag = true;
+				}
+			}
+			if (modifyFlag) {
+				manageRepository.updateloginPass(loginName, newPass);
+				return loginName;
+			} else {
+				RespUtils.responseJsonFailed(response, "check message faild, password modify failed!");
+				return null;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "inner error!");
+			return null;
+		}
+	}
+
+	@Override
+	public JsonObject getLogininfoByName(HttpServletResponse response, String loginName) {
+		Map<String, Object> params = new ConcurrentHashMap<String, Object>(3);
+		params.put(Constant.LOGINNAME, loginName);
+		try {
+			Map<String, Object> user = manageRepository.getloginInfoByAuth(params);
+			if (user == null) {
+				RespUtils.responseJsonFailed(response, "not register or password is error!");
+				return null;
+			}
+			JsonObject login = new JsonObject();
+			for (Entry<String, Object> item : user.entrySet()) {
+				String key = item.getKey();
+				// System.out.println(key);
+
+				if (Constant.CREATEDATE.equals(key) || Constant.UPDATEDATE.equals(key)
+						|| Constant.EXPIREDATE.equals(key)) {
+					Timestamp value = (Timestamp) item.getValue();
+					if (value != null) {
+						login.put(item.getKey(), value.toInstant().toString());
+					} else {
+						login.put(item.getKey(), "");
+					}
+				} else if (Constant.USERID.equals(key) || Constant.LOGINID.equals(key) || Constant.STATE.equals(key)) {
+					login.put(item.getKey(), String.valueOf(item.getValue()));
+				} else {
+					login.put(item.getKey(), (String) (item.getValue()));
+
+				}
+			}
+			return login;
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "inner error!");
+			return null;
+		}
+
+	}
+
+	@Override
+	public boolean insertVariCode(HttpServletResponse response, String loginName, String variCode) {
+		Map<String, Object> params = new ConcurrentHashMap<String, Object>(2);
+		params.put("loginName", loginName);
+		params.put("variCode", variCode);
+		params.put("state", 1);
+		try {
+			manageRepository.updateVariCodeState(params);
+			manageRepository.insertVariCode(params);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "inner error!");
+			return false;
 		}
 
 	}

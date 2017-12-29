@@ -29,12 +29,29 @@ public class UserInfoBean {
 		user.put("namePin", namePin);
 		user.put("sex", sex);
 		user.put("email", email);
+		user.put("state", state);
 		user.put("phone", phone);
 		user.put("zoneqq", zoneqq);
 		user.put("address", address);
-		user.put("birthDate", birthDate.toInstant().toString());
-		user.put("applyDate", applyDate.toInstant().toString());
-		user.put("acceptDate", acceptDate.toInstant().toString());
+		if (birthDate == null) {
+			user.put("birthDate", "");
+		} else {
+			user.put("birthDate", birthDate.toInstant().toString());
+		}
+		if (applyDate == null) {
+			user.put("applyDate", "");
+
+		} else {
+			user.put("applyDate", applyDate.toInstant().toString());
+
+		}
+		if (acceptDate == null) {
+			user.put("acceptDate", "");
+
+		} else {
+			user.put("acceptDate", acceptDate.toInstant().toString());
+
+		}
 		user.put("accepterId", accepterId);
 		user.put("remark", remark);
 		return user;

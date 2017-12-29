@@ -122,12 +122,12 @@ public class ExportServiceTxtImpl implements ExportService {
 			b.setTableForWordsExport(b.getTestData());
 			b.docClose();
 			Path file = Paths.get(Constant.LOCATION + "test.doc");
-			System.out.println(Files.exists(file));
+			// System.out.println(Files.exists(file));
 			if (!Files.exists(file)) {
 				Files.createFile(file);
 			}
 			Files.write(file, b.getDocContent());
-			System.out.println(b.toString());
+			// System.out.println(b.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

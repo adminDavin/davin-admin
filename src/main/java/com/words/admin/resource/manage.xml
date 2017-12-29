@@ -7,8 +7,35 @@
     <sql id="appColumns">  
         u.app_name AS "userName"    
     </sql>  
-    
-    
+    <sql id="variCodeColumns">  
+		u.variCodeId AS "variCodeId",    
+		u.loginName AS "loginName",    
+	    u.variCode AS "variCode",      
+	    u.state AS "state",     
+		u.createDate AS "createDate",    
+		u.updateDate AS "updateDate"
+   </sql>  
+   <update  id="updateVariCodeState"  parameterType="Map" useGeneratedKeys="true"  keyProperty="string">  
+         update variCode set state=#{state}  
+  			where loginName=#{loginName}
+    </update>  
+    <insert  id="insertVariCode"  parameterType="Map" useGeneratedKeys="true"  keyProperty="string">  
+         insert into variCode(loginName,variCode,state)  
+    			values( #{loginName},#{variCode}, 0) 
+    </insert>  
+    <!-- 根据 userName 查询 -->  
+    <select id="getVariCode" parameterType="map" resultType="hashmap">  
+        SELECT  
+        <include refid="variCodeColumns" />  
+        FROM  
+        variCode u   
+        where loginName=#{loginName} and variCode=#{variCode} state=0
+        limit 1
+    </select>  
+    <select id="updateVariCode" parameterType="map">  
+        update variCode  set state=1  
+        where loginName=#{loginName} and variCode=#{variCode} state=0 
+    </select>  
     <sql id="loginInfoColumns">  
 		u.loginId AS "loginId",    
 		u.loginName AS "loginName",    
@@ -26,7 +53,11 @@
         <include refid="loginInfoColumns" />  
         FROM  
         logininfo u   
-        where loginName=#{loginName} and password=#{password}
+        where loginName=#{loginName} 
+        <if test="password != null">
+        and password=#{password}
+   		</if>
+   		limit 1
     </select>  
     <!-- 根据 userName 查询 -->  
     <select id="getloginInfoByLoginName" parameterType="map" resultType="hashmap">  
@@ -35,11 +66,28 @@
         FROM  
         logininfo u  where loginName=#{loginName}
     </select>  
+    <select id="getloginInfoByUserId" parameterType="map" resultType="hashmap">  
+        SELECT  
+        <include refid="loginInfoColumns" />  
+        FROM  
+        logininfo u  where  userId=#{userId} limit 1
+    </select>  
+    
+    
     
     <insert  id="insertloginInfo"  parameterType="Map" useGeneratedKeys="true"  keyProperty="string">  
          insert into logininfo( password,loginName,userId,state)  
     			values( #{password},#{loginName},#{userId},0) 
     </insert>  
+     <update id="updateLoginInfoState"  parameterType="map">
+		 update logininfo SET state=#{state}
+		 where userId=#{userId}
+	</update>
+	
+     <update id="updateLoginPass"  parameterType="map">
+		 update logininfo SET password=#{password},updateDate=now()
+		 where loginName=#{loginName}
+	</update>
      <!-- 根据 userName 查询 -->  
     <select id="getAppName" resultType="hashmap">  
         SELECT  
@@ -94,7 +142,7 @@
     
      <update id="updateUserInfo"  parameterType="com.words.admin.manage.bean.UserInfoBean">
 		 update UserInfo SET name=#{name},namepin=#{namePin},organize=#{organize},
-		        phone=#{phone},zoneqq=#{zoneqq},remark=#{remark},address=#{address},
+		        phone=#{phone},remark=#{remark},address=#{address},sex=#{sex},state=#{state}
 		 where userId=#{userId}
 	</update>
     

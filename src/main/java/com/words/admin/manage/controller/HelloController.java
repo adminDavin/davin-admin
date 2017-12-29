@@ -1,8 +1,10 @@
 package com.words.admin.manage.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import com.words.admin.config.Constant;
 import com.words.admin.manage.bean.RoleInfoBean;
 import com.words.admin.manage.bean.ServiceInfoBean;
 import com.words.admin.manage.bean.UserInfoBean;
+import com.words.admin.manage.service.EmailService;
 import com.words.admin.manage.service.ManageService;
 import com.words.admin.resource.TransferService;
 
@@ -35,6 +38,9 @@ public class HelloController {
 	private TransferService transferService;
 	@Autowired(required = true)
 	private ManageService manageService;
+
+	@Autowired(required = true)
+	private EmailService emailService;
 	private int count = 0;
 
 	@RequestMapping("/hello")
@@ -51,7 +57,7 @@ public class HelloController {
 
 	@RequestMapping("/hello1")
 	public Callable<String> processUpload(final MultipartFile file) {
-		System.out.println("fff");
+		// System.out.println("fff");
 		return new Callable<String>() {
 			public String call() throws Exception {
 				// ...
@@ -211,7 +217,7 @@ public class HelloController {
 	@RequestMapping("/getUserListByUserId")
 	public void getUserListByUserId(HttpServletRequest request, HttpServletResponse response) {
 		String userId = request.getParameter(Constant.USERID);
-		System.out.println(userId);
+		// System.out.println(userId);
 		if (userId == null) {
 			RespUtils.responseJsonFailed(response, "userId is required!");
 			return;
@@ -223,6 +229,7 @@ public class HelloController {
 			result.put("message", "user is update success");
 			RespUtils.responseJsonSuccess(response, result);
 		} catch (Exception e) {
+			e.printStackTrace();
 			RespUtils.responseJsonFailed(response, "params is invalied!");
 			return;
 		}
@@ -264,7 +271,9 @@ public class HelloController {
 		item.setNamePin(param.get(Constant.NAMEPIN)[0]);
 		item.setOrganize(param.get(Constant.ORGANIZE)[0]);
 		item.setRemark(param.get(Constant.REMARK)[0]);
+		item.setPhone(param.get(Constant.PHONE)[0]);
 		item.setAddress(param.get(Constant.ADDRESS)[0]);
+		item.setName(param.get(Constant.NAME)[0]);
 		// item.setNamePin(param.get(Constant.BIRTHDATE)[0]);
 		String results = manageService.updateUserInfo(response, item);
 		JsonObject result = new JsonObject();
@@ -273,6 +282,120 @@ public class HelloController {
 		result.put("data", data);
 		result.put("message", "user is update success");
 		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/updateSingleUserInfo")
+	public void updateSingleUserInfo(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, String[]> param = ValiedParams.checkKeyModify(response, request.getParameterMap(),
+				Constant.UPDATEUSERINFOSINGLE);
+		int userId = 0;
+		try {
+			userId = Integer.parseInt(request.getParameter(Constant.USERID));
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "userId is not exist!");
+			return;
+		}
+		UserInfoBean item = manageService.selectUserInfoById(response, userId);
+		String results = manageService.updateSingleUserInfo(response, item, param);
+		JsonObject result = new JsonObject();
+		JsonObject data = new JsonObject();
+		data.put("userId", results);
+		result.put("data", data);
+		result.put("message", "role is update success");
+		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/sendVariCode")
+	public void sendVariCode(HttpServletRequest request, HttpServletResponse response) {
+		String loginName = "";
+		try {
+			loginName = request.getParameter("loginName");
+			if (loginName == null) {
+				throw new Exception();
+			}
+			JsonObject loginInfo = manageService.getLogininfoByName(response, loginName);
+			if (loginInfo == null) {
+				return;
+			}
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "params is invalid!");
+			return;
+		}
+
+		Random random = new Random();
+		String variCode = String.valueOf(1000000 + random.nextInt(900000));
+		JsonObject result = new JsonObject();
+		boolean sendEmailFlag = emailService.sendEmail(loginName,
+				"Words Admin varify code for change Password of this system", Constant.EMAILMESSAGEFORPASS + variCode);
+		if (sendEmailFlag) {
+			boolean insertFlag = manageService.insertVariCode(response, loginName, variCode);
+			if (insertFlag) {
+				result.put("data", "success");
+				result.put("message", "varify code send success");
+				RespUtils.responseJsonSuccess(response, result);
+				return;
+			} else {
+				RespUtils.responseJsonFailed(response, "insert database failed!");
+				return;
+			}
+		} else {
+			result.put("data", "failed");
+			result.put("message", "send email failed");
+			RespUtils.responseJsonSuccess(response, result);
+		}
+	}
+
+	@RequestMapping("/modifyPass")
+	public void updateLoginInfoPass(HttpServletRequest request, HttpServletResponse response) {
+		String oldPass = "";
+		String newPass = "";
+		String vairiCode = "";
+		String loginName = "";
+
+		try {
+			oldPass = request.getParameter("oldPassword");
+			vairiCode = request.getParameter("variCode");
+			newPass = request.getParameter("newPassword");
+			loginName = request.getParameter("loginName");
+			if (newPass == null) {
+				throw new Exception();
+			}
+			if (vairiCode == null && oldPass == null) {
+				throw new Exception();
+			}
+			if (newPass == null || loginName == null) {
+				throw new Exception();
+			}
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "params is invalid!");
+			return;
+		}
+
+		Map<String, Object> param = new HashMap<String, Object>(3);
+		try {
+			if (oldPass != null) {
+				param.put("oldPass", new String(Base64.decodeBase64(oldPass.getBytes("UTF-8"))));
+			} else {
+				param.put("oldPass", null);
+			}
+			param.put("vairiCode", vairiCode);
+			param.put("newPass", new String(Base64.decodeBase64(newPass.getBytes("UTF-8"))));
+			param.put("loginName", loginName);
+			String results = manageService.updateloginPass(response, param);
+			if (results == null) {
+				return;
+			}
+			JsonObject result = new JsonObject();
+			JsonObject data = new JsonObject();
+			data.put("userId", results);
+			result.put("data", data);
+			result.put("message", "password is update success");
+			RespUtils.responseJsonSuccess(response, result);
+		} catch (UnsupportedEncodingException e) {
+			RespUtils.responseJsonFailed(response, "inner is error!");
+			e.printStackTrace();
+		}
+
 	}
 
 	@RequestMapping("/updateRoleInfo")
@@ -368,7 +491,7 @@ public class HelloController {
 
 	public int getCount() {
 		this.count++;
-		System.out.println("the hello counter is :" + count);
+		// System.out.println("the hello counter is :" + count);
 		return count;
 	}
 

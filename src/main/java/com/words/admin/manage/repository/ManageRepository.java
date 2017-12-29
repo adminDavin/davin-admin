@@ -44,4 +44,16 @@ public interface ManageRepository {
 
 	public Map<String, Object> getloginInfoByLoginName(Map<String, Object> params);
 
+	public int updateLoginInfoState(Map<String, Object> params);
+
+	public Map<String, Object> getloginInfoByUserId(Map<String, Object> params);
+
+	public boolean checkVariCode(String loginName, String vairiCode);
+
+	public void updateloginPass(String loginName, String newPass);
+
+	public void insertVariCode(Map<String, Object> params);
+
+	public void updateVariCodeState(Map<String, Object> params);
+
 }
