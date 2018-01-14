@@ -14,16 +14,20 @@ public class Constant {
 	public static String REMARK = "remark";
 	public static String ADDRESS = "address";
 	public static String BIRTHDATE = "birthDate";
+	public static String ACCEPTER = "accepter";
+	public static String STATUSACTION = "statusAction";
+	public static String MESSAGE = "massage";
+	public static String USERID = "userId";
 
 	public static String[] USERINFO = { NAME, NAMEPIN, ORGANIZE, SEX, EMAIL, PHONE, ZONEQQ, REMARK, ADDRESS,
 			BIRTHDATE };
 	public static String[] UPDATEUSERINFO = { NAME, NAMEPIN, ORGANIZE, PHONE, REMARK, ADDRESS, BIRTHDATE, SEX };
 	public static String[] UPDATEUSERINFOSINGLE = { ORGANIZE, PHONE, REMARK, ADDRESS };
+	public static String[] UPDATEUSERSTATUSPARAMS = { ACCEPTER, USERID, STATUSACTION, MESSAGE };
 
 	public static String ROLENAME = "name";
 	public static String ROLEDESC = "desc";
 	public static String ROLESERVICE = "service";
-	public static String USERID = "userId";
 	public static String[] ROLEINFO = { ROLENAME, ROLEDESC, ROLESERVICE, USERID };
 
 	public static String WORDSDOCID = "docId";

@@ -221,4 +221,28 @@ public class ManageRepositoryImpl implements ManageRepository {
 		}
 	}
 
+	@Override
+	public List<UserInfoBean> getUserList(List<Integer> userState) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			return sqlSession.selectList("manage.getUserinfoList", userState);
+		}
+	}
+
+	@Override
+	public Map<String, Object> checkManagerAuth(Map<String, Object> condition) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			return sqlSession.selectOne("manage.checkManagerAuth", condition);
+		}
+	}
+
+	@Override
+	public int updateUserStatus(Map<String, Object> item) {
+
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			int result = sqlSession.update("manage.updateUserStatus", item);
+			sqlSession.commit();
+			return result;
+		}
+	}
+
 }

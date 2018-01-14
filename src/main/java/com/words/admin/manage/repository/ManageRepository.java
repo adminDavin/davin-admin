@@ -56,4 +56,10 @@ public interface ManageRepository {
 
 	public void updateVariCodeState(Map<String, Object> params);
 
+	public List<UserInfoBean> getUserList(List<Integer> userState);
+
+	public Map<String, Object> checkManagerAuth(Map<String, Object> condition);
+
+	public int updateUserStatus(Map<String, Object> item);
+
 }

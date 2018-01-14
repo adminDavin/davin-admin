@@ -17,18 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.web.common.CustomException;
 import com.web.response.RespUtils;
 import com.words.admin.Utils.ValiedParams;
 import com.words.admin.config.Constant;
 import com.words.admin.manage.bean.RoleInfoBean;
 import com.words.admin.manage.bean.ServiceInfoBean;
 import com.words.admin.manage.bean.UserInfoBean;
+import com.words.admin.manage.bean.UserStatusEnum;
 import com.words.admin.manage.service.EmailService;
 import com.words.admin.manage.service.ManageService;
 import com.words.admin.resource.TransferService;
 
 import jodd.json.JsonArray;
 import jodd.json.JsonObject;
+import jodd.json.JsonParser;
 
 @RequestScope
 @RestController
@@ -171,13 +174,22 @@ public class HelloController {
 	public void login(HttpServletRequest request, HttpServletResponse response) {
 		String loginName = request.getParameter(Constant.LOGINNAME);
 		String password = request.getParameter(Constant.PASSWORD);
+		String isManage = request.getParameter("isManage");
+		int userState = 0;
+		if (isManage != null) {
+			System.out.println(isManage.endsWith("true"));
+			userState = 5;
+		}
 		if (!checkLoginParams(loginName, password, response)) {
 			return;
 		}
 		JsonObject login;
 		try {
 			login = manageService.getloginInfoByAuth(response, loginName,
-					new String(Base64.decodeBase64(password.getBytes("UTF-8"))));
+					new String(Base64.decodeBase64(password.getBytes("UTF-8"))), userState);
+			if (login == null) {
+				return;
+			}
 		} catch (UnsupportedEncodingException e) {
 			return;
 		}
@@ -200,18 +212,42 @@ public class HelloController {
 	@RequestMapping("/getUserList")
 	public void getUserInfo(HttpServletRequest request, HttpServletResponse response) {
 		List<UserInfoBean> list = manageService.selectUserAll(response);
-		if (list == null) {
+		if (list != null) {
+			JsonObject result = new JsonObject();
+			JsonArray data = new JsonArray();
+
+			for (UserInfoBean user : list) {
+				data.add(user.getJsonInfo());
+			}
+
+			result.put("data", data);
+			RespUtils.responseJsonSuccess(response, result);
+		}
+	}
+
+	@RequestMapping("/getUserListByState")
+	public void getUserListByState(HttpServletRequest request, HttpServletResponse response) {
+		String userStateStr = request.getParameter("userState");
+		List<Integer> userStateList = null;
+		try {
+			if (userStateStr != null) {
+				userStateList = new JsonParser().parse(userStateStr);
+			}
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "params 'userState' is invalied!");
 			return;
 		}
-		JsonObject result = new JsonObject();
-		JsonArray data = new JsonArray();
 
-		for (UserInfoBean user : list) {
-			data.add(user.getJsonInfo());
+		List<UserInfoBean> list = manageService.selectUserAll(response, userStateList);
+		if (list != null) {
+			JsonObject result = new JsonObject();
+			JsonArray data = new JsonArray();
+			for (UserInfoBean user : list) {
+				data.add(user.getJsonInfo());
+			}
+			result.put("data", data);
+			RespUtils.responseJsonSuccess(response, result);
 		}
-
-		result.put("data", data);
-		RespUtils.responseJsonSuccess(response, result);
 	}
 
 	@RequestMapping("/getUserListByUserId")
@@ -282,6 +318,46 @@ public class HelloController {
 		result.put("data", data);
 		result.put("message", "user is update success");
 		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/updateUserStatus")
+	public void updateUserStatus(HttpServletRequest request, HttpServletResponse response) throws CustomException {
+		Map<String, String[]> param = ValiedParams.checkKeyExist(response, request.getParameterMap(),
+				Constant.UPDATEUSERSTATUSPARAMS);
+		String authKey = "updateUserStatus";
+		if (param == null) {
+			return;
+		}
+		int userId = 0;
+		int managerId = 0;
+		try {
+			userId = Integer.parseInt(request.getParameter(Constant.USERID));
+			managerId = Integer.parseInt(request.getParameter(Constant.ACCEPTER));
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "userId or accepter is not integer!");
+		}
+		try {
+			int status = UserStatusEnum.getName(param.get(Constant.STATUSACTION)[0]);
+			if (status == -1) {
+				throw new CustomException(" status is invalid!");
+			}
+			manageService.checkManagerAuth(response, managerId, authKey);
+			int updateRows = manageService.updateUserStatus(userId, status, param.get(Constant.MESSAGE)[0], managerId);
+			JsonObject result = new JsonObject();
+			JsonObject data = new JsonObject();
+			data.put("updateRows", updateRows);
+			result.put("data", data);
+			result.put("message", "user is success updated");
+			RespUtils.responseJsonSuccess(response, result);
+
+		} catch (CustomException e) {
+			RespUtils.responseJsonFailed(response, e.getMessage());
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "unknow error!");
+			return;
+		}
 	}
 
 	@RequestMapping("/updateSingleUserInfo")

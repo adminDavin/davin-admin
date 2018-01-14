@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.web.common.CustomException;
 import com.words.admin.manage.bean.RoleInfoBean;
 import com.words.admin.manage.bean.ServiceInfoBean;
 import com.words.admin.manage.bean.UserInfoBean;
@@ -41,7 +42,7 @@ public interface ManageService {
 
 	public String addLoginInfo(HttpServletResponse response, String loginName, String password);
 
-	public JsonObject getloginInfoByAuth(HttpServletResponse response, String loginName, String string);
+	public JsonObject getloginInfoByAuth(HttpServletResponse response, String loginName, String string, int userState);
 
 	public String updateUserInfo(HttpServletResponse response, UserInfoBean item);
 
@@ -52,5 +53,11 @@ public interface ManageService {
 	public JsonObject getLogininfoByName(HttpServletResponse response, String loginName);
 
 	public boolean insertVariCode(HttpServletResponse response, String loginName, String variCode);
+
+	public List<UserInfoBean> selectUserAll(HttpServletResponse response, List<Integer> userStateList);
+
+	public boolean checkManagerAuth(HttpServletResponse response, int managerId, String authKey) throws CustomException;
+
+	public int updateUserStatus(int userId, int status, String message, int managerId) throws CustomException;
 
 }

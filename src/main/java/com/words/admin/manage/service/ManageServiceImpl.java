@@ -14,11 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
+import com.web.common.CustomException;
 import com.web.response.RespUtils;
 import com.words.admin.config.Constant;
 import com.words.admin.manage.bean.RoleInfoBean;
 import com.words.admin.manage.bean.ServiceInfoBean;
 import com.words.admin.manage.bean.UserInfoBean;
+import com.words.admin.manage.bean.UserStatusEnum;
 import com.words.admin.manage.repository.ManageRepository;
 
 import jodd.json.JsonObject;
@@ -321,7 +323,8 @@ public class ManageServiceImpl implements ManageService {
 	}
 
 	@Override
-	public JsonObject getloginInfoByAuth(HttpServletResponse response, String loginName, String password) {
+	public JsonObject getloginInfoByAuth(HttpServletResponse response, String loginName, String password,
+			int userState) {
 		Map<String, Object> params = new ConcurrentHashMap<String, Object>(3);
 		params.put(Constant.LOGINNAME, loginName);
 		params.put(Constant.PASSWORD, password);
@@ -330,6 +333,17 @@ public class ManageServiceImpl implements ManageService {
 			if (user == null) {
 				RespUtils.responseJsonFailed(response, "not register or password is error!");
 				return null;
+			}
+			if (!user.get(Constant.PASSWORD).equals(password)) {
+				RespUtils.responseJsonFailed(response, "password is inconrect!");
+				return null;
+			}
+
+			if (userState == 5) {
+				if (!user.get(Constant.STATE).equals(5)) {
+					RespUtils.responseJsonFailed(response, "permission isn't enought!");
+					return null;
+				}
 			}
 			JsonObject login = new JsonObject();
 			for (Entry<String, Object> item : user.entrySet()) {
@@ -454,6 +468,52 @@ public class ManageServiceImpl implements ManageService {
 			return false;
 		}
 
+	}
+
+	@Override
+	public List<UserInfoBean> selectUserAll(HttpServletResponse response, List<Integer> userState) {
+		try {
+			return manageRepository.getUserList(userState);
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "select database failed!");
+			return null;
+		}
+
+	}
+
+	@Override
+	public boolean checkManagerAuth(HttpServletResponse response, int managerId, String authKey)
+			throws CustomException {
+		Map<String, Object> condition = new ConcurrentHashMap<String, Object>(2);
+		condition.put(Constant.USERID, managerId);
+		condition.put("authKey", authKey);
+		Map<String, Object> getAuth = manageRepository.checkManagerAuth(condition);
+		if (getAuth == null) {
+			throw new CustomException(503, "user auth is failed", response);
+		}
+		return true;
+	}
+
+	@Override
+	public int updateUserStatus(int userId, int status, String message, int managerId) throws CustomException {
+		UserInfoBean userInfo = manageRepository.getUserInfoById(userId);
+		UserInfoBean manager = manageRepository.getUserInfoById(managerId);
+		if (userInfo == null) {
+			throw new CustomException("user is not exists!");
+		}
+		if (userInfo.getState() == UserStatusEnum.AUDITING.getValue()) {
+			throw new CustomException("user is auditing!");
+		} else if (userInfo.getState() == status) {
+			throw new CustomException("user is status is same as you wish!");
+		}
+		Map<String, Object> item = new ConcurrentHashMap<String, Object>(2);
+		item.put(Constant.USERID, userId);
+		item.put(Constant.STATE, status);
+		item.put(Constant.ACCEPTER, managerId);
+		item.put(Constant.NAME, manager.getName());
+		int updateRrows = manageRepository.updateUserStatus(item);
+		return updateRrows;
 	}
 
 }

@@ -54,9 +54,6 @@
         FROM  
         logininfo u   
         where loginName=#{loginName} 
-        <if test="password != null">
-        and password=#{password}
-   		</if>
    		limit 1
     </select>  
     <!-- 根据 userName 查询 -->  
@@ -110,25 +107,32 @@
 		u.applyDate   AS "applyDate",
 		u.acceptDate  AS "acceptDate",
 		u.accepterId  AS "accepterId",
+		u.accepter  AS "accepter",
 		u.birthDate  AS "birthDate",
 		u.remark      AS "remark" 
     </sql>
-     
-     <select id="getUserinfoList" resultType="com.words.admin.manage.bean.UserInfoBean">  
+     <select id="getUserinfoList" resultType="com.words.admin.manage.bean.UserInfoBean" parameterType="java.util.List">  
         SELECT  
         <include refid="UserinfoColumns" />  
-        FROM  UserInfo u 
+        FROM  UserInfo u  
+        where 1 = 1
+        <if test="list != null and list.size != 0">
+        and u.state in 
+	        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">  
+	            #{item}  
+	        </foreach>
+        </if> 
     </select>  
-       
+        
     <select id="getUserinfoByEmail"   parameterType="string" resultType="com.words.admin.manage.bean.UserInfoBean">  
         SELECT  
-        <include refid="UserinfoColumns" />  
-        FROM  UserInfo u where   u.email=  #{email}
+        <include refid="UserinfoColumns" />
+         FROM  UserInfo u where   u.email=  #{email}
     </select>  
     
     <select id="getUserinfoById"   parameterType="int" resultType="com.words.admin.manage.bean.UserInfoBean">  
         SELECT  
-        <include refid="UserinfoColumns" />  
+        <include refid="UserinfoColumns" /> 
         FROM  UserInfo u where   u.userId=  #{userId}
     </select>  
     <insert  id="insertUserInfo"  parameterType="com.words.admin.manage.bean.UserInfoBean" useGeneratedKeys="true"  keyProperty="string">  
@@ -145,7 +149,10 @@
 		        phone=#{phone},remark=#{remark},address=#{address},sex=#{sex},state=#{state}
 		 where userId=#{userId}
 	</update>
-    
+     <update id="updateUserStatus"  parameterType="map">
+		 update UserInfo SET state=#{state},accepterId=#{accepter},acceptDate=now(),accepter=#{name}
+		 where userId=#{userId}
+	</update>
      <!-- 根据 roleInfo 查询 --> 
     <sql id="roleinfoColumns">  
         r.roleId  		as "roleId",
@@ -188,12 +195,12 @@
 	</update>
     <!-- 根据 roleInfo 查询 --> 
      <sql id="serviceinfoColumns">  
-        r.serviceId  		as "serviceId",
-		r.description          as "description",
-		r.name   as "name",
-		r.state        as "state",
-		r.createDate       as "createDate",
-		r.modifyDate         as "modifyDate" 
+        s.serviceId  		as "serviceId",
+		s.description          as "description",
+		s.name   as "name",
+		s.state        as "state",
+		s.createDate       as "createDate",
+		s.modifyDate         as "modifyDate" 
      </sql>     
      <select id="getServiceListByServiceId"   parameterType="int" resultType="com.words.admin.manage.bean.ServiceInfoBean">  
         SELECT  
@@ -206,6 +213,21 @@
         FROM  ServiceInfo s  
     </select> 
     
-    
+    <sql id="authInfoColumns">  
+        aR.userId  		as "userId",
+		a.authKey          as "authKey",
+		a.authId   as "authId"
+	 </sql>     
       
+       
+    <select id="checkManagerAuth"    parameterType="map" resultType="map">  
+        SELECT  
+        <include refid="authInfoColumns" />  
+        FROM  authRelation aR inner join authInfo a
+         on ar.authId=a.authId
+         where a.state=0
+         and aR.state=0
+         and aR.userId =#{userId}
+         and  a.authKey=#{authKey}  
+    </select>
 </mapper>

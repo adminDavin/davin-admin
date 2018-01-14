@@ -43,4 +43,8 @@ public class ValiedParams {
 		return null;
 	}
 
+	public static int checkIsInt(HttpServletResponse response, String paramName, String parameter) throws Exception {
+		return Integer.parseInt(parameter);
+	}
+
 }

@@ -20,6 +20,7 @@ public class UserInfoBean {
 	private Timestamp acceptDate;
 	private Integer accepterId;
 	private String remark;
+	private String accepter;
 
 	public JsonObject getJsonInfo() {
 		JsonObject user = new JsonObject();
@@ -33,6 +34,7 @@ public class UserInfoBean {
 		user.put("phone", phone);
 		user.put("zoneqq", zoneqq);
 		user.put("address", address);
+		user.put("accepter", accepter);
 		if (birthDate == null) {
 			user.put("birthDate", "");
 		} else {
@@ -175,6 +177,14 @@ public class UserInfoBean {
 
 	public void setBirthDate(Timestamp birthDate) {
 		this.birthDate = birthDate;
+	}
+
+	public String getAccepter() {
+		return accepter;
+	}
+
+	public void setAccepter(String accepter) {
+		this.accepter = accepter;
 	}
 
 }
