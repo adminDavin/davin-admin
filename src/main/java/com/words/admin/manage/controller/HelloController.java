@@ -176,8 +176,7 @@ public class HelloController {
 		String password = request.getParameter(Constant.PASSWORD);
 		String isManage = request.getParameter("isManage");
 		int userState = 0;
-		if (isManage != null) {
-			System.out.println(isManage.endsWith("true"));
+		if (isManage.equals("true")) {
 			userState = 5;
 		}
 		if (!checkLoginParams(loginName, password, response)) {
@@ -562,6 +561,36 @@ public class HelloController {
 		}
 
 		result.put("data", data);
+		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/deleteUser")
+	public void deleteUser(HttpServletRequest request, HttpServletResponse response) {
+		String authKey = "deleteUser";
+		String userIdStr = request.getParameter(Constant.USERID);
+		String managerIdStr = request.getParameter("manager");
+		int managerId = 0;
+		int userId = 0;
+		try {
+			managerId = Integer.parseInt(managerIdStr);
+			userId = Integer.parseInt(userIdStr);
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "parameter is invalid!");
+			return;
+		}
+		try {
+			manageService.checkManagerAuth(response, managerId, authKey);
+			manageService.deleteUser(userId, managerId);
+		} catch (CustomException e) {
+			RespUtils.responseJsonFailed(response, e.getMessage());
+			return;
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "inner error!");
+			return;
+		}
+
+		JsonObject result = new JsonObject();
+		result.put("data", "user is deleted");
 		RespUtils.responseJsonSuccess(response, result);
 	}
 

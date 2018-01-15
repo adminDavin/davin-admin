@@ -516,4 +516,21 @@ public class ManageServiceImpl implements ManageService {
 		return updateRrows;
 	}
 
+	@Override
+	public void deleteUser(int userId, int managerId) throws CustomException {
+		UserInfoBean userInfo = manageRepository.getUserInfoById(userId);
+		UserInfoBean manager = manageRepository.getUserInfoById(managerId);
+		if (userInfo == null) {
+			throw new CustomException("user is not exists!");
+		}
+
+		Map<String, Object> item = new ConcurrentHashMap<String, Object>(2);
+		item.put(Constant.USERID, userId);
+		item.put(Constant.STATE, 9);
+		item.put(Constant.ACCEPTER, managerId);
+		item.put(Constant.NAME, manager.getName());
+		manageRepository.updateUserStatus(item);
+
+	}
+
 }

@@ -60,4 +60,6 @@ public interface ManageService {
 
 	public int updateUserStatus(int userId, int status, String message, int managerId) throws CustomException;
 
+	public void deleteUser(int userId, int managerId) throws CustomException;
+
 }
