@@ -88,6 +88,30 @@ public class HelloController {
 		RespUtils.responseJsonSuccess(response, result);
 	}
 
+	@RequestMapping("/deleteRole")
+	public void deleteRole(HttpServletRequest request, HttpServletResponse response) {
+		String authKey = "deleteRole";
+		Map<String, String[]> roleInfoMap = ValiedParams.checkKeyExist(response, request.getParameterMap(),
+				Constant.DELETEROLEINFO);
+
+		if (roleInfoMap == null) {
+			return;
+		}
+		Integer managerId = Integer.parseInt(request.getParameter(Constant.MANAGEID));
+		// try {
+		// manageService.checkManagerAuth(response, managerId, authKey);
+		manageService.deleteRole(response, roleInfoMap);
+		// } catch (CustomException e) {
+		// e.printStackTrace();
+		// RespUtils.responseJsonFailed(response, "auth failed!");
+		// return;
+		// }
+
+		JsonObject result = new JsonObject();
+		result.put("message", "role is delete success");
+		RespUtils.responseJsonSuccess(response, result);
+	}
+
 	@RequestMapping("/register")
 	public void register(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, String[]> userinfoMap = ValiedParams.checkKeyExist(response, request.getParameterMap(),
@@ -172,7 +196,7 @@ public class HelloController {
 
 	@RequestMapping("/login")
 	public void login(HttpServletRequest request, HttpServletResponse response) {
-		String loginName = request.getParameter(Constant.LOGINNAME);
+		String loginName = request.getParameter("loginName");
 		String password = request.getParameter(Constant.PASSWORD);
 		String isManage = request.getParameter("isManage");
 		int userState = 0;
@@ -564,6 +588,69 @@ public class HelloController {
 		RespUtils.responseJsonSuccess(response, result);
 	}
 
+	@RequestMapping("/getServerListByRole")
+	public void getServerListByRole(HttpServletRequest request, HttpServletResponse response) {
+		String roleIdStr = request.getParameter(Constant.ROLEID);
+		int roleId = 0;
+		try {
+			roleId = Integer.parseInt(roleIdStr);
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "parameter is invalid!");
+			return;
+		}
+		List<ServiceInfoBean> list = manageService.getServiceListByRole(response, roleId);
+		if (list == null) {
+			return;
+		}
+		JsonObject result = new JsonObject();
+		JsonArray data = new JsonArray();
+
+		for (ServiceInfoBean obj : list) {
+			JsonObject objJson = obj.getJsonInfo();
+			data.add(objJson);
+		}
+
+		result.put("data", data);
+		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/saveRoleRelService")
+	public void saveRoleRelService(HttpServletRequest request, HttpServletResponse response) {
+		String authKey = "saveRoleRelService";
+		String roleIdStr = request.getParameter(Constant.ROLEID);
+		String managerIdStr = request.getParameter("manageId");
+		String serviceIdsStr = request.getParameter("serviceIds");
+		int managerId = 0;
+		int roleId = 0;
+		List<Integer> serviceIds = null;
+		try {
+			managerId = Integer.parseInt(managerIdStr);
+			roleId = Integer.parseInt(roleIdStr);
+			serviceIds = new JsonParser().parse(serviceIdsStr);
+			if (serviceIds.size() == 0) {
+				throw new Exception();
+			}
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "parameter is invalid!");
+			return;
+		}
+		try {
+			// manageService.checkManagerAuth(response, managerId, authKey);
+			manageService.setRoleService(roleId, managerId, serviceIds);
+		} catch (CustomException e) {
+			RespUtils.responseJsonFailed(response, e.getMessage());
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "inner error!");
+			return;
+		}
+
+		JsonObject result = new JsonObject();
+		result.put("data", "user is deleted");
+		RespUtils.responseJsonSuccess(response, result);
+	}
+
 	@RequestMapping("/deleteUser")
 	public void deleteUser(HttpServletRequest request, HttpServletResponse response) {
 		String authKey = "deleteUser";
@@ -592,6 +679,104 @@ public class HelloController {
 		JsonObject result = new JsonObject();
 		result.put("data", "user is deleted");
 		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/addManager")
+	public void addManager(HttpServletRequest request, HttpServletResponse response) {
+		String authKey = "addManager";
+		String userIdStr = request.getParameter(Constant.USERID);
+		String managerIdStr = request.getParameter("manageId");
+		int managerId = 0;
+		int userId = 0;
+		try {
+			managerId = Integer.parseInt(managerIdStr);
+			userId = Integer.parseInt(userIdStr);
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "parameter is invalid!");
+			return;
+		}
+		try {
+			manageService.checkManagerAuth(response, managerId, authKey);
+			manageService.updateUserToManager(userId, managerId);
+		} catch (CustomException e) {
+			RespUtils.responseJsonFailed(response, e.getMessage());
+			return;
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "inner error!");
+			return;
+		}
+
+		JsonObject result = new JsonObject();
+		result.put("data", "user is deleted");
+		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/setManageRole")
+	public void setManageRole(HttpServletRequest request, HttpServletResponse response) {
+		String authKey = "setManageRole";
+		String userIdStr = request.getParameter(Constant.USERID);
+		String managerIdStr = request.getParameter("manageId");
+		String rolesIdStr = request.getParameter("rolesId");
+		int managerId = 0;
+		int userId = 0;
+		List<Integer> rolesId = null;
+		try {
+			managerId = Integer.parseInt(managerIdStr);
+			userId = Integer.parseInt(userIdStr);
+			rolesId = new JsonParser().parse(rolesIdStr);
+			if (rolesId.size() == 0) {
+				throw new Exception();
+			}
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "parameter is invalid!");
+			return;
+		}
+		try {
+			// manageService.checkManagerAuth(response, managerId, authKey);
+			manageService.setManageRole(userId, managerId, rolesId);
+		} catch (CustomException e) {
+			RespUtils.responseJsonFailed(response, e.getMessage());
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "inner error!");
+			return;
+		}
+
+		JsonObject result = new JsonObject();
+		result.put("data", "user is deleted");
+		RespUtils.responseJsonSuccess(response, result);
+	}
+
+	@RequestMapping("/getManagerRoles")
+	public void getManagerRoles(HttpServletRequest request, HttpServletResponse response) {
+
+		String userIdStr = request.getParameter(Constant.USERID);
+
+		int userId = 0;
+		List<Integer> rolesId = null;
+		try {
+			userId = Integer.parseInt(userIdStr);
+		} catch (Exception e) {
+			RespUtils.responseJsonFailed(response, "parameter is invalid!");
+			return;
+		}
+		try {
+			List<RoleInfoBean> list = manageService.getManagerRoles(userId);
+			JsonObject result = new JsonObject();
+			JsonArray data = new JsonArray();
+			for (RoleInfoBean obj : list) {
+				JsonObject objJson = obj.getJsonInfo();
+				data.add(objJson);
+			}
+			result.put("data", data);
+			RespUtils.responseJsonSuccess(response, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "inner error!");
+			return;
+		}
+
 	}
 
 	public int getCount() {

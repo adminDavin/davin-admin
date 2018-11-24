@@ -62,4 +62,14 @@ public interface ManageRepository {
 
 	public int updateUserStatus(Map<String, Object> item);
 
+	public int deleteData(List<Map<String, Object>> datas, String table);
+
+	public int insertData(List<Map<String, Object>> datas, String table);
+
+	public List<RoleInfoBean> getRoleInfoBeanDatas(Map<String, Object> item, String table);
+
+	public int deleteDataByMap(Map<String, Object> item, String string);
+
+	public List<ServiceInfoBean> getServiceListByRole(int roleId);
+
 }

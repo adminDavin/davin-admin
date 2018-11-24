@@ -1,7 +1,6 @@
 package com.words.admin.words.controller;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -133,11 +132,7 @@ public class WordsAdminController {
 			export.setTableForWordsExport(wordsInfo);
 			export.docClose();
 			String fileName = exportWordsMap.get(Constant.EXPORTNAME)[0];
-			String fileNameEncode = URLEncoder.encode(fileName, "UTF-8") + "." + type;
-			response.setContentType("application/octet-stream;charset=UTF-8");
-			response.setHeader("content-disposition", "attachment;filename=" + fileNameEncode);
-			FileCopyUtils.copy(export.getDocContent(), response.getOutputStream());
-
+			export.setResponse(response, fileName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			RespUtils.responseJsonFailed(response, "words export failed!");

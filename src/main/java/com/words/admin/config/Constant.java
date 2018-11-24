@@ -28,7 +28,11 @@ public class Constant {
 	public static String ROLENAME = "name";
 	public static String ROLEDESC = "desc";
 	public static String ROLESERVICE = "service";
-	public static String[] ROLEINFO = { ROLENAME, ROLEDESC, ROLESERVICE, USERID };
+	public static String MANAGEID = "manageId";
+	public static String ROLEID = "roleId";
+
+	public static String[] ROLEINFO = { ROLENAME, ROLEDESC, MANAGEID };
+	public static String[] DELETEROLEINFO = { ROLEID, MANAGEID };
 
 	public static String WORDSDOCID = "docId";
 	public static String INITPAGE = "initPage";
@@ -47,14 +51,14 @@ public class Constant {
 	public static String UPDATEDATE = "updateDate";
 	public static String EXPIREDATE = "ExpireDate";
 
-	public static String PDFPATH = "E:\\Temp\\pdf-store\\";
+	public static String PDFPATH = "C:\\Temp\\pdf-store\\";
 
-	public static String LOGINNAME = "loginName";
+	public static String LOGINNAME = "userName";
 
 	public static String PASSWORD = "password";
-	public static final String LOCATION = "E:\\Temp\\";
+	public static final String LOCATION = "C:\\Temp\\";
 	public static final String OFFICEHOME = "C:\\Program Files (x86)\\OpenOffice 4";
-	public static final String OFFICEWORKER = "E:\\Temp\\office\\worker\\";
+	public static final String OFFICEWORKER = "C:\\Temp\\office\\worker\\";
 	// public static final String OFFICETEMP = "E:\\Temp\\office\\temp\\";
 	public static final String EXPORTDOC = "doc";
 	public static final String EXPORTPDF = "pdf";

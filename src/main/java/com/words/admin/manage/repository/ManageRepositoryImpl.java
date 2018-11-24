@@ -245,4 +245,48 @@ public class ManageRepositoryImpl implements ManageRepository {
 		}
 	}
 
+	@Override
+	public int deleteData(List<Map<String, Object>> datas, String table) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			int result = sqlSession.delete("manage.delete" + table, datas);
+			sqlSession.commit();
+			return result;
+		}
+
+	}
+
+	@Override
+	public int insertData(List<Map<String, Object>> datas, String table) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			int userid = sqlSession.insert("manage.insert" + table, datas);
+			sqlSession.commit();
+			return userid;
+		}
+	}
+
+	@Override
+	public List<RoleInfoBean> getRoleInfoBeanDatas(Map<String, Object> item, String table) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			return sqlSession.selectList("manage.get" + table, item);
+		}
+
+	}
+
+	@Override
+	public int deleteDataByMap(Map<String, Object> item, String table) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			int result = sqlSession.delete("manage.delete" + table, item);
+			sqlSession.commit();
+			return result;
+		}
+
+	}
+
+	@Override
+	public List<ServiceInfoBean> getServiceListByRole(int roleId) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			return sqlSession.selectList("manage.getServiceListByRole", roleId);
+		}
+	}
+
 }

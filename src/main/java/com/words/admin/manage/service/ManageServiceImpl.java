@@ -1,10 +1,13 @@
 package com.words.admin.manage.service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
@@ -96,9 +99,8 @@ public class ManageServiceImpl implements ManageService {
 		try {
 			roleInfo.setName(map.get(Constant.ROLENAME)[0]);
 			roleInfo.setDesc(map.get(Constant.ROLEDESC)[0]);
-			String service = map.get(Constant.ROLESERVICE)[0];
-			roleInfo.setService(Integer.parseInt(service));
-			String userId = map.get(Constant.USERID)[0];
+			roleInfo.setService(0);
+			String userId = map.get(Constant.MANAGEID)[0];
 			roleInfo.setUserId(Integer.parseInt(userId));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -303,7 +305,7 @@ public class ManageServiceImpl implements ManageService {
 
 		Map<String, Object> params = new ConcurrentHashMap<String, Object>(3);
 		params.put(Constant.USERID, userId);
-		params.put(Constant.LOGINNAME, loginName);
+		params.put("loginName", loginName);
 		params.put(Constant.PASSWORD, password);
 		try {
 			Map<String, Object> user = manageRepository.getloginInfoByLoginName(params);
@@ -326,7 +328,7 @@ public class ManageServiceImpl implements ManageService {
 	public JsonObject getloginInfoByAuth(HttpServletResponse response, String loginName, String password,
 			int userState) {
 		Map<String, Object> params = new ConcurrentHashMap<String, Object>(3);
-		params.put(Constant.LOGINNAME, loginName);
+		params.put("loginName", loginName);
 		params.put(Constant.PASSWORD, password);
 		try {
 			Map<String, Object> user = manageRepository.getloginInfoByAuth(params);
@@ -488,11 +490,11 @@ public class ManageServiceImpl implements ManageService {
 		Map<String, Object> condition = new ConcurrentHashMap<String, Object>(2);
 		condition.put(Constant.USERID, managerId);
 		condition.put("authKey", authKey);
-		Map<String, Object> getAuth = manageRepository.checkManagerAuth(condition);
-		if (getAuth == null) {
-			throw new CustomException(503, "user auth is failed", response);
-		}
 		return true;
+		// Map<String, Object> getAuth = manageRepository.checkManagerAuth(condition);
+		// if (getAuth == null) {
+		// throw new CustomException(503, "user auth is failed", response);
+		// }
 	}
 
 	@Override
@@ -530,6 +532,88 @@ public class ManageServiceImpl implements ManageService {
 		item.put(Constant.ACCEPTER, managerId);
 		item.put(Constant.NAME, manager.getName());
 		manageRepository.updateUserStatus(item);
+
+	}
+
+	@Override
+	public void updateUserToManager(int userId, int managerId) throws CustomException {
+		UserInfoBean userInfo = manageRepository.getUserInfoById(userId);
+		UserInfoBean manager = manageRepository.getUserInfoById(managerId);
+		if (userInfo == null) {
+			throw new CustomException("user is not exists!");
+		}
+
+		Map<String, Object> item = new ConcurrentHashMap<String, Object>(2);
+		item.put(Constant.USERID, userId);
+		item.put(Constant.STATE, 5);
+		item.put(Constant.ACCEPTER, managerId);
+		item.put(Constant.NAME, manager.getName());
+		manageRepository.updateUserStatus(item);
+		manageRepository.updateLoginInfoState(item);
+	}
+
+	@Override
+	public void setManageRole(int userId, int managerId, List<Integer> rolesId) throws CustomException {
+		UserInfoBean userInfo = manageRepository.getUserInfoById(userId);
+		// UserInfoBean manager = manageRepository.getUserInfoById(managerId);
+		if (userInfo == null) {
+			throw new CustomException("user is not exists!");
+		}
+
+		Set<Integer> roles = new HashSet<Integer>(rolesId);
+		List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
+		for (Integer role : roles) {
+			Map<String, Object> item = new ConcurrentHashMap<String, Object>(3);
+			item.put(Constant.USERID, userId);
+			item.put(Constant.STATE, 0);
+			item.put("authId", role);
+			datas.add(item);
+		}
+		manageRepository.deleteData(datas, "authrelation");
+		manageRepository.insertData(datas, "authrelation");
+	}
+
+	@Override
+	public List<RoleInfoBean> getManagerRoles(int userId) {
+		Map<String, Object> item = new ConcurrentHashMap<String, Object>(1);
+		item.put(Constant.USERID, userId);
+		return manageRepository.getRoleInfoBeanDatas(item, "authrelation" + "role");
+	}
+
+	@Override
+	public String deleteRole(HttpServletResponse response, Map<String, String[]> roleInfoMap) {
+
+		String roleId = roleInfoMap.get(Constant.ROLEID)[0];
+		Map<String, Object> item = new ConcurrentHashMap<String, Object>(1);
+		item.put(Constant.ROLEID, roleId);
+		int result = manageRepository.deleteDataByMap(item, "roleinfo");
+		return String.valueOf(result);
+	}
+
+	@Override
+	public List<ServiceInfoBean> getServiceListByRole(HttpServletResponse response, int roleId) {
+		try {
+			return manageRepository.getServiceListByRole(roleId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			RespUtils.responseJsonFailed(response, "select database failed!");
+			return null;
+		}
+	}
+
+	@Override
+	public void setRoleService(int roleId, int managerId, List<Integer> serviceIds) throws CustomException {
+		Set<Integer> services = new HashSet<Integer>(serviceIds);
+		List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
+		for (Integer service : services) {
+			Map<String, Object> item = new ConcurrentHashMap<String, Object>(3);
+			item.put(Constant.ROLEID, roleId);
+			item.put(Constant.STATE, 0);
+			item.put("authId", service);
+			datas.add(item);
+		}
+		manageRepository.deleteData(datas, "rolerel");
+		manageRepository.insertData(datas, "rolerel");
 
 	}
 

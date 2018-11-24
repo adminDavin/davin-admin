@@ -62,4 +62,16 @@ public interface ManageService {
 
 	public void deleteUser(int userId, int managerId) throws CustomException;
 
+	public void updateUserToManager(int userId, int managerId) throws CustomException;
+
+	public void setManageRole(int userId, int managerId, List<Integer> rolesId) throws CustomException;
+
+	public List<RoleInfoBean> getManagerRoles(int userId);
+
+	public String deleteRole(HttpServletResponse response, Map<String, String[]> roleInfoMap);
+
+	public List<ServiceInfoBean> getServiceListByRole(HttpServletResponse response, int roleId);
+
+	public void setRoleService(int roleId, int managerId, List<Integer> serviceIds) throws CustomException;
+
 }

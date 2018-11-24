@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Document;
@@ -27,7 +29,7 @@ public class ExportServiceDocImpl implements ExportService {
 	private Document doc;
 	private ByteBuffer content;
 
-	public ExportServiceDocImpl() {
+	public ExportServiceDocImpl(String type) {
 		super();
 		docInit();
 		docOpen();
@@ -125,7 +127,7 @@ public class ExportServiceDocImpl implements ExportService {
 
 	public static void main(String[] args) {
 		try {
-			ExportServiceDocImpl b = new ExportServiceDocImpl();
+			ExportServiceDocImpl b = new ExportServiceDocImpl("doc");
 			b.setTableForWordsExport(b.getTestData());
 			b.docClose();
 			Path file = Paths.get(Constant.LOCATION + "test.doc");
@@ -154,6 +156,14 @@ public class ExportServiceDocImpl implements ExportService {
 
 	public void setDoc(Document doc) {
 		this.doc = doc;
+	}
+
+	
+
+	@Override
+	public void setResponse(HttpServletResponse response, String fileName) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

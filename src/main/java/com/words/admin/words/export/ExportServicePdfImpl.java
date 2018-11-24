@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -126,6 +128,13 @@ public class ExportServicePdfImpl implements ExportService {
 
 	public void setDoc(Document doc) {
 		this.doc = doc;
+	}
+ 
+
+	@Override
+	public void setResponse(HttpServletResponse response, String fileName) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

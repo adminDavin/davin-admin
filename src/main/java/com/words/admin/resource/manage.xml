@@ -207,6 +207,12 @@
         <include refid="serviceinfoColumns" />  
         FROM  ServiceInfo s where   s.serviceId=  #{serviceId}
     </select> 
+    
+    <select id="getServiceListByRole"   parameterType="int" resultType="com.words.admin.manage.bean.ServiceInfoBean">  
+        SELECT  
+        <include refid="serviceinfoColumns" />  
+         FROM  ServiceInfo s inner join rolerel r on r.authId = s.serviceId where roleId=#{roleId};
+    </select> 
     <select id="getServiceListAll"    resultType="com.words.admin.manage.bean.ServiceInfoBean">  
         SELECT  
         <include refid="serviceinfoColumns" />  
@@ -215,19 +221,66 @@
     
     <sql id="authInfoColumns">  
         aR.userId  		as "userId",
-		a.authKey          as "authKey",
+		s.action          as "authKey",
 		a.authId   as "authId"
 	 </sql>     
       
        
     <select id="checkManagerAuth"    parameterType="map" resultType="map">  
-        SELECT  
-        <include refid="authInfoColumns" />  
-        FROM  authRelation aR inner join authInfo a
-         on ar.authId=a.authId
+         select 
+        <include refid="authInfoColumns" />    
+        FROM  authRelation aR inner join rolerel a 
+         on ar.authId=a.roleId
+         inner join serviceinfo s on a.authId=s.serviceId
          where a.state=0
          and aR.state=0
-         and aR.userId =#{userId}
-         and  a.authKey=#{authKey}  
+         and aR.userId =1
     </select>
+    
+    
+     <insert  id="insertauthrelation"  parameterType="java.util.List" useGeneratedKeys="true"  keyProperty="string">  
+         insert into authrelation(userId, authId, state)  
+  			values
+  			<foreach collection="list" index="index" item="item" separator=",">  
+	           (#{item.userId},#{item.authId},#{item.state}) 
+	       	</foreach> 
+     </insert>
+     
+     <delete  id="deleteauthrelation"  parameterType="java.util.List">  
+         delete from authrelation where   1=1 and  
+  			<foreach collection="list" index="index" item="item"   open="("  separator=" or " close=")">  
+	           (userId=#{item.userId}) 
+	       	</foreach>  
+     </delete>  
+     <insert  id="insertrolerel"  parameterType="java.util.List" useGeneratedKeys="true"  keyProperty="string">  
+         insert into rolerel(roleId, authId, state)  
+  			values
+  			<foreach collection="list" index="index" item="item" separator=",">  
+	           (#{item.roleId},#{item.authId},#{item.state}) 
+	       	</foreach> 
+     </insert> 
+     <delete  id="deleterolerel"  parameterType="java.util.List">  
+         delete from rolerel where   1=1 and  
+  			<foreach collection="list" index="index" item="item"   open="("  separator=" or " close=")">  
+	           (roleId=#{item.roleId}) 
+	       	</foreach>  
+     </delete>    
+     <delete  id="deleteroleinfo"  parameterType="map">  
+         delete from roleinfo where   1=1 and roleId=#{roleId}
+     </delete>   
+     
+     <resultMap id="authrelationroleMap" type="hashmap"> 
+        <result property="roleId" column="roleId"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+     </resultMap>
+     <select id="getauthrelationrole" parameterType="map" resultType="com.words.admin.manage.bean.RoleInfoBean">
+     	select  
+     		<include refid="roleinfoColumns" />   
+     		from authrelation inner join roleinfo r
+     		on authId=r.roleId
+     		where authrelation.userId=#{userId}
+     </select>
+     
+     
 </mapper>
