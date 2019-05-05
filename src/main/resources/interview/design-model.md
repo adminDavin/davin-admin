@@ -56,8 +56,8 @@ Java设计模式之责任链模式、职责链模式
 策略模式：https://design-patterns.readthedocs.io/zh_CN/latest/behavioral_patterns/strategy.html
 
 策略模式作为设计原则中开闭原则最典型的体现，也是经常使用的。下面这篇博客介绍了策略模式一般的组成部分和概念，并用了一个小demo去说明了策略模式的应用。
-https://blog.csdn.net/zlj1217/article/details/81230077
-    java设计模式之策略模式
+
+    java设计模式之策略模式(https://blog.csdn.net/zlj1217/article/details/81230077)
 
     模板方法模式：
     访问者模式：
