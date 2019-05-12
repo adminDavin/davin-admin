@@ -51,15 +51,15 @@ public class Constant {
 	public static String UPDATEDATE = "updateDate";
 	public static String EXPIREDATE = "ExpireDate";
 
-	public static String PDFPATH = "C:\\Temp\\pdf-store\\";
+	public static String PDFPATH = "E:\\Temp\\pdf-store\\";
 
 	public static String LOGINNAME = "userName";
 
 	public static String PASSWORD = "password";
-	public static final String LOCATION = "C:\\Temp\\";
-	public static final String OFFICEHOME = "C:\\Program Files (x86)\\OpenOffice 4";
-	public static final String OFFICEWORKER = "C:\\Temp\\office\\worker\\";
-	// public static final String OFFICETEMP = "E:\\Temp\\office\\temp\\";
+	public static final String LOCATION = "E:\\Temp\\";
+	public static final String OFFICEHOME = "E:\\Program Files (x86)\\OpenOffice 4";
+	public static final String OFFICEWORKER = "E:\\Temp\\office\\worker\\";
+	public static final String OFFICETEMP = "E:\\Temp\\office\\temp\\";
 	public static final String EXPORTDOC = "doc";
 	public static final String EXPORTPDF = "pdf";
 	public static final String[] DOCUTYTE = { "pdf", "doc" };

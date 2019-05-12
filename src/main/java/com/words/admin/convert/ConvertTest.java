@@ -56,9 +56,6 @@ public class ConvertTest {
 	private static void doGetConnect() throws Exception {
 		XComponentContext localContext = Bootstrap.createInitialComponentContext(null);
 		XMultiComponentFactory localServiceManager = localContext.getServiceManager();
-		// XConnector connector = OfficeUtils.cast(XConnector.class,
-		// localServiceManager.createInstanceWithContext("com.sun.star.connection.Connector",
-		// localContext));
 		doConvert();
 	}
 

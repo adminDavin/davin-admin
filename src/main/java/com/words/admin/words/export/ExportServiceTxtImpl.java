@@ -6,12 +6,16 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.util.FileCopyUtils;
 
 import jodd.json.JsonArray;
 import jodd.json.JsonObject;
+import jodd.json.meta.JSON;
 
 public class ExportServiceTxtImpl implements ExportService {
+    protected Logger log = Logger.getLogger(ExportServiceTxtImpl.class);
+	
 	private ByteBuffer content;
 	private String type;
 
@@ -19,7 +23,7 @@ public class ExportServiceTxtImpl implements ExportService {
 	public ExportServiceTxtImpl(String type) {
 		super();
 		this.type = type;
-
+		content = new ByteBuffer();
 	}
  
 
@@ -33,6 +37,10 @@ public class ExportServiceTxtImpl implements ExportService {
         for (Object item : tabCon) {
         	JsonObject wordsInfo = (JsonObject) item;
         	String row = ExportUtils.getRowFormat(wordsInfo, separator, endswith);
+        	log.info(wordsInfo);
+        	if (row == null) {
+        		continue;
+        	}
         	content.append(row.getBytes(characterSet));
         }
 	}

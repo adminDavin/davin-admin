@@ -130,6 +130,7 @@ public class WordsAdminServiceImpl implements WordsAdminService {
 			List<WordsInfo> words = wordsAdminRepository.getWordsInfoList(wordsInfo);
 			JsonArray jsonArray = new JsonArray();
 			for (WordsInfo item : words) {
+				item.setPageNum((item.getPageNum() + item.getInitPage()));
 				jsonArray.add(item.getJsonInfo());
 			}
 			if (jsonArray.size() == 0) {

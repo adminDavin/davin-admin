@@ -509,6 +509,9 @@ public class ManageServiceImpl implements ManageService {
 		} else if (userInfo.getState() == status) {
 			throw new CustomException("user is status is same as you wish!");
 		}
+		if (manager == null || manager.getName() == null) {
+			throw new CustomException("用户信息有缺失，请先更新用户信息!");
+		}
 		Map<String, Object> item = new ConcurrentHashMap<String, Object>(2);
 		item.put(Constant.USERID, userId);
 		item.put(Constant.STATE, status);
