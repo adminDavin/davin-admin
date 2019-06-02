@@ -8,15 +8,15 @@ import org.springframework.stereotype.Component;
 
 import com.zaxxer.hikari.HikariDataSource;
 
-@Component("dbPool")
+//@Component("dbPool")
 public class DataSourceHikari extends HikariDataSource {
 
 	public DataSourceHikari(Environment jdbc) {
-		String driver = jdbc.getProperty("jdbc.driver");
-		String url = jdbc.getProperty("jdbc.url");
-		String user = jdbc.getProperty("jdbc.user");
-		String pass = jdbc.getProperty("jdbc.pass");
-		int maxPoolSize = Integer.parseInt(jdbc.getProperty("jdbc.pool.maxPoolSize"));
+		String driver = jdbc.getProperty("spring.jdbc.driver");
+		String url = jdbc.getProperty("spring.jdbc.url");
+		String user = jdbc.getProperty("spring.jdbc.user");
+		String pass = jdbc.getProperty("spring.jdbc.pass");
+		int maxPoolSize = Integer.parseInt(jdbc.getProperty("spring.jdbc.pool.maxPoolSize"));
 		if ("com.mysql.cj.jdbc.Driver".equals(driver)) {
 			this.setDriverClassName(driver);
 			this.setJdbcUrl(url);

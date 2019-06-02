@@ -2,6 +2,7 @@ package com.words.admin.manage.service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,10 +14,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
+import com.alibaba.fastjson.JSON;
 import com.web.common.CustomException;
 import com.web.response.RespUtils;
 import com.words.admin.config.Constant;
@@ -31,9 +36,14 @@ import jodd.json.JsonObject;
 @SessionScope
 @Service("userInfoService")
 public class ManageServiceImpl implements ManageService {
+
+	Logger logger = LogManager.getLogger(ManageServiceImpl.class.getName());
 	@Autowired(required = true)
 	private ManageRepository manageRepository;
 
+	@Autowired
+	private EmailService emailService;
+	
 	private boolean loginFlag;
 
 	@PostConstruct
@@ -196,7 +206,9 @@ public class ManageServiceImpl implements ManageService {
 			return null;
 		}
 	}
-
+	
+	
+	
 	@Override
 	public String updateUserInfo(HttpServletResponse response, UserInfoBean item) {
 		try {
@@ -210,6 +222,8 @@ public class ManageServiceImpl implements ManageService {
 			if ((int) login.get(Constant.STATE) == 0) {
 				params.put("state", 6);
 				item.setState(6);
+				List<UserInfoBean> managers = selectUserAll(response, Arrays.asList(new Integer[]{5})); // 5 是管理員				
+				emailService.remindManager(managers.get(0).getEmail(), item);
 			}
 			manageRepository.updateUserInfo(item);
 			params.put("state", login.get(Constant.STATE));
@@ -293,6 +307,7 @@ public class ManageServiceImpl implements ManageService {
 		String email = loginName;
 		try {
 			UserInfoBean user = manageRepository.getUserInfoByEmail(email);
+			logger.info("get User:" + JSON.toJSONString(user));
 			if (user == null) {
 				userId = manageRepository.insertSimpleUserInfo(email);
 			}
@@ -309,15 +324,18 @@ public class ManageServiceImpl implements ManageService {
 		params.put(Constant.PASSWORD, password);
 		try {
 			Map<String, Object> user = manageRepository.getloginInfoByLoginName(params);
+			logger.info("get User Login info:" + JSON.toJSONString(user));
 			if (user == null) {
 				manageRepository.insertloginInfo(params);
+				emailService.remindRegister(email, loginName, password);
 				return String.valueOf(userId);
 			} else {
+				logger.info("user has login failed. please check log");
 				RespUtils.responseJsonFailed(response, "user is register failed for email is exists!");
 				return null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.info(e);
 			RespUtils.responseJsonFailed(response, "user is register failed for insert database!");
 			return null;
 		}
@@ -402,6 +420,7 @@ public class ManageServiceImpl implements ManageService {
 				}
 			}
 			if (modifyFlag) {
+				emailService.remindUserForModifyPassword(loginName, newPass);
 				manageRepository.updateloginPass(loginName, newPass);
 				return loginName;
 			} else {
@@ -518,6 +537,9 @@ public class ManageServiceImpl implements ManageService {
 		item.put(Constant.ACCEPTER, managerId);
 		item.put(Constant.NAME, manager.getName());
 		int updateRrows = manageRepository.updateUserStatus(item);
+		if (UserStatusEnum.AGREE.getValue() == userInfo.getState() || UserStatusEnum.REJECT.getValue() == userInfo.getSex()) {
+			emailService.remindUserApplyResult(userInfo.getEmail(), userInfo.getState());
+		}
 		return updateRrows;
 	}
 

@@ -121,7 +121,8 @@
 	        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">  
 	            #{item}  
 	        </foreach>
-        </if> 
+        </if>
+        order by organize 
     </select>  
         
     <select id="getUserinfoByEmail"   parameterType="string" resultType="com.words.admin.manage.bean.UserInfoBean">  

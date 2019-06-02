@@ -11,12 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
 import com.web.common.CustomException;
 import com.web.response.RespUtils;
 import com.words.admin.Utils.ValiedParams;
@@ -36,13 +39,15 @@ import jodd.json.JsonParser;
 @RequestScope
 @RestController
 public class HelloController {
+	Logger logger = LogManager.getLogger(HelloController.class.getName());
 
-	@Autowired(required = true)
+	
+	@Autowired
 	private TransferService transferService;
-	@Autowired(required = true)
+	@Autowired
 	private ManageService manageService;
 
-	@Autowired(required = true)
+	@Autowired
 	private EmailService emailService;
 	private int count = 0;
 
@@ -98,14 +103,14 @@ public class HelloController {
 			return;
 		}
 		Integer managerId = Integer.parseInt(request.getParameter(Constant.MANAGEID));
-		// try {
-		// manageService.checkManagerAuth(response, managerId, authKey);
-		manageService.deleteRole(response, roleInfoMap);
-		// } catch (CustomException e) {
-		// e.printStackTrace();
-		// RespUtils.responseJsonFailed(response, "auth failed!");
-		// return;
-		// }
+		 try {
+			manageService.checkManagerAuth(response, managerId, authKey);
+			manageService.deleteRole(response, roleInfoMap);
+		 } catch (CustomException e) {
+		 e.printStackTrace();
+		 RespUtils.responseJsonFailed(response, "auth failed!");
+		 return;
+		 }
 
 		JsonObject result = new JsonObject();
 		result.put("message", "role is delete success");
@@ -123,7 +128,6 @@ public class HelloController {
 		if (userId == null) {
 			return;
 		}
-
 		JsonObject result = new JsonObject();
 		JsonObject data = new JsonObject();
 		data.put("userId", userId);
@@ -199,8 +203,9 @@ public class HelloController {
 		String loginName = request.getParameter("loginName");
 		String password = request.getParameter(Constant.PASSWORD);
 		String isManage = request.getParameter("isManage");
+		System.out.println("ddddddddddddddddddddddddd");
 		int userState = 0;
-		if (isManage.equals("true")) {
+		if ("true".equals(isManage)) {
 			userState = 5;
 		}
 		if (!checkLoginParams(loginName, password, response)) {
@@ -316,6 +321,7 @@ public class HelloController {
 	public void updateUserInfo(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, String[]> param = ValiedParams.checkKeyExist(response, request.getParameterMap(),
 				Constant.UPDATEUSERINFO);
+		logger.info("action:updateUserInfo request params:" + JSON.toJSONString(param));
 		if (param == null) {
 			return;
 		}

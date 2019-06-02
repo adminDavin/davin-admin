@@ -13,16 +13,22 @@ import java.util.stream.Stream;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.words.admin.config.Constant;
+import com.words.admin.words.repository.WordsAdminRepository;
 
-@Service
+@Component
+@Configurable
+@EnableScheduling
 public class MyTaskService {
 	@Autowired(required = true)
-	private SqlSessionFactory sqlSessionFactory;
-
+	private WordsAdminRepository wordsAdminRepository;
+	
 	@Scheduled(cron = "0 0 23 * * ?")
 	public void reportCurrentTime() {
 		Path pdfDir = Paths.get(Constant.PDFPATH);
@@ -36,15 +42,11 @@ public class MyTaskService {
 						if (diffDay > Constant.FILESAVEDAYS) {
 							String uuId = file.getFileName().toString().split("\\.")[0];
 							Files.delete(file);
-							try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-								sqlSession.update("words.updateDocument", uuId);
-								sqlSession.commit();
-							}
+							wordsAdminRepository.updateDocumentStatus(uuId);
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					// System.out.println(file);
 				}
 			});
 			;

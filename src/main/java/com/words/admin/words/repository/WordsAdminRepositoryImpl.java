@@ -13,7 +13,7 @@ import com.words.admin.words.bean.WordsInfo;
 
 @Repository("wordsAdminRepository")
 public class WordsAdminRepositoryImpl implements WordsAdminRepository {
-	@Autowired(required = true)
+	@Autowired
 	private SqlSessionFactory sqlSessionFactory;
 
 	public Map<String, String[]> getUserInfo() throws Exception {
@@ -86,6 +86,14 @@ public class WordsAdminRepositoryImpl implements WordsAdminRepository {
 			try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
 				return sqlSession.selectList("words.getDocuInfoList", beanInfo);
 			}
+		}
+	}
+	
+	@Override
+	public void updateDocumentStatus(String uuId) {
+		try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+			sqlSession.update("words.updateDocument", uuId);
+			sqlSession.commit();
 		}
 	}
 

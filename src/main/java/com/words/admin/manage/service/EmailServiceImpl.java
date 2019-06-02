@@ -14,6 +14,11 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.words.admin.email.EmailConstants;
+import com.words.admin.manage.bean.UserInfoBean;
+import com.words.admin.manage.bean.UserStatusEnum;
+
 @Service("emailService")
 public class EmailServiceImpl implements EmailService {
 	// private static final Logger logger =
@@ -70,5 +75,34 @@ public class EmailServiceImpl implements EmailService {
 			// throw new RuntimeException(e);
 			return false;
 		}
+	}
+
+	@Override
+	public void remindRegister(String email, String loginName, String password) {
+		String message = EmailConstants.REGISTER_REMIND_MESSAGGE + " \n登錄名:" + loginName + "\n密碼:" + password;
+		sendEmail(email, EmailConstants.REGISTER_REMIND_SUBJECT, message);	
+	}
+
+	@Override
+	public void remindManager(String email, UserInfoBean item) {
+		String message = EmailConstants.MANAGER_REMIND_MESSAGGE + " \n" + JSON.toJSONString(item);
+		sendEmail(email, EmailConstants.MANAGER_REMIND_SUBJECT + item.getEmail(), message);	
+	}
+
+	@Override
+	public void remindUserForModifyPassword(String email, String newPass) {
+		String message = EmailConstants.USERMODIFYPASS_REMIND_MESSAGGE + " \n" + newPass;
+		sendEmail(email, EmailConstants.MANAGER_REMIND_SUBJECT, message);			
+	}
+
+	@Override
+	public void remindUserApplyResult(String email, int state) {
+		String message = null;
+		if (UserStatusEnum.AGREE.getValue() == state) {
+			message = "管理員已審核通過, 歡迎使用索引傢系統";
+		} else {
+			message = "管理員審核結果未通過, 如有需要,請聯係管理員";
+		}
+		sendEmail(email, EmailConstants.USERMODIFYPASS_REMIND_SUBJECT, message);			
 	}
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" strict="true" name="XMLConfigTest"
+               packages="org.apache.logging.log4j.test">
+  <Properties>
+    <Property name="filename">target/test.log</Property>
+  </Properties>
+  <Filter type="ThresholdFilter" level="trace"/>
+ 
+  <Appenders>
+    <Appender type="Console" name="INFO">
+      <Layout type="PatternLayout" pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+      <Filters>
+        <Filter type="MarkerFilter" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
+      </Filters>
+    </Appender>
+  </Appenders>
+ 
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="INFO"/>
+    </Root>
+  </Loggers>
+ 
+</Configuration>

@@ -17,7 +17,7 @@ import com.words.admin.manage.bean.UserInfoBean;
 
 @Repository("manageRepository")
 public class ManageRepositoryImpl implements ManageRepository {
-	@Autowired(required = true)
+	@Autowired
 	private SqlSessionFactory sqlSessionFactory;
 
 	public Map<String, String[]> getUserInfo() throws Exception {
