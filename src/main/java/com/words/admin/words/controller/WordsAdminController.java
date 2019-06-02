@@ -59,6 +59,10 @@ public class WordsAdminController {
 		} else {
 			try {
 				userId = Integer.parseInt(userIdStr);
+				if (userId == 0) {
+					RespUtils.responseJsonFailed(response, "userId not invalid!");
+					return;
+				}
 			} catch (Exception e) {
 				RespUtils.responseJsonFailed(response, "userId must be number!");
 				return;

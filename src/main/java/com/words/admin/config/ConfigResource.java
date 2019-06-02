@@ -21,6 +21,7 @@ import com.words.admin.resource.MybatisSpring;
 import com.words.admin.words.repository.WordsAdminRepositoryImpl;
 
 @Configuration
+@ComponentScan("com.words.admin.resource")
 @PropertySource(value={"classpath:application.properties"})
 public class ConfigResource {
 	@Autowired

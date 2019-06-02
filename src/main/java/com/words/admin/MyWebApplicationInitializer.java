@@ -33,14 +33,12 @@ import com.words.admin.config.ConfigService;
 import com.words.admin.config.Constant;
 
 
-@HandlesTypes(WebApplicationInitializer.class)   
-
-
-@ComponentScan("com.words.admin.TaskScheduler")
-@ComponentScan("com.words.admin.resource")
+@HandlesTypes(WebApplicationInitializer.class)
 @ComponentScan("com.words.admin.manage.service")
 @ComponentScan("com.words.admin.manage.repository")
 @EnableWebSecurity
+
+@ComponentScan("com.words.admin.TaskScheduler")
 @EnableScheduling
 public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
@@ -49,13 +47,12 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 		AnnotationConfigWebApplicationContext cxt = new AnnotationConfigWebApplicationContext();
 		cxt.register(ConfigInit.class, ConfigResource.class, ConfigService.class, Constant.class, ConfigAspector.class);
 		cxt.refresh();
-		DispatcherServlet servlet = new DispatcherServlet(cxt);
 		container.addListener(new ContextLoaderListener(cxt));
-		container.setInitParameter("spring.profiles.active", "dev"); //Workaround for NamingException
-	    container.setInitParameter("spring.profiles.default", "dev"); //Workaround for NamingException
-	    container.setInitParameter("spring.liveBeansView.mbeanDomain", "dev"); //Workaround for NamingException
+		container.setInitParameter("spring.profiles.active", "dev");
+	    container.setInitParameter("spring.profiles.default", "dev");
+	    container.setInitParameter("spring.liveBeansView.mbeanDomain", "dev");
 
-		ServletRegistration.Dynamic registration = container.addServlet("words-admin", servlet);
+	    ServletRegistration.Dynamic registration = container.addServlet("words-admin", new DispatcherServlet(cxt));
 		registration.setLoadOnStartup(1);
 		registration.addMapping("/admin/*");
 		registration.setMultipartConfig(getMultipartConfigElement());
@@ -63,13 +60,11 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 		characterEncodingFilter.setEncoding("UTF-8");
 		characterEncodingFilter.setForceEncoding(true);
 		EnumSet<DispatcherType> dispatcherTypes = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD);
-		FilterRegistration.Dynamic characterEncoding = container.addFilter("CharacterEncodingFilter",
-				characterEncodingFilter);
+		FilterRegistration.Dynamic characterEncoding = container.addFilter("CharacterEncodingFilter", characterEncodingFilter);
 		characterEncoding.addMappingForUrlPatterns(dispatcherTypes, true, "/*");
 
 	}
 
-	// 设置上传的相关参数
 	public static MultipartConfigElement getMultipartConfigElement() {
 		MultipartConfigElement multipartConfigElement = new MultipartConfigElement(Constant.LOCATION,
 				Constant.MAX_FILE_SIZE, Constant.MAX_REQUEST_SIZE, Constant.FILE_SIZE_THRESHOLD);

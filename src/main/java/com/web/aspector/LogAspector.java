@@ -32,6 +32,7 @@ public class LogAspector {
 @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping) && execution(public * *(..))")
    	public void recordLog() {
 	}
+
     @Before( "recordLog()")
 	public void doBefore(JoinPoint joinPoint) throws Throwable {
 		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -42,12 +43,6 @@ public class LogAspector {
 	}
 	 
 	@AfterReturning(returning = "ret", pointcut = "recordLog()")
-    public void doAfterReturning(Object ret) throws Throwable {
-//		if (ret != null) {
-//			logger.info("reuturn data: " + ret);
-//	        logger.info("SPEND TIME : " + (System.currentTimeMillis() - startTime.get()));
-//		} else {
-//			logger.error("request failed.");
-//		}         
+    public void doAfterReturning(Object ret) throws Throwable {      
     }
 }

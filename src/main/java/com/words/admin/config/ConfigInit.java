@@ -10,7 +10,7 @@ import com.words.admin.resource.TransferServiceImpl;
 @Configuration
 @ComponentScan("com.words.admin.manage.controller")
 @ComponentScan("com.words.admin.words.controller")
-public class ConfigInit {
+public class ConfigInit  {
 
 	@Bean
 	public TransferService transferService() {
