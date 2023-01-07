@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">   
+<mapper namespace="version"> 
+	 <!-- 表字段显式 -->  
+    <sql id="appColumns">  
+        u.app_name AS "userName"    
+    </sql>  
+    
+     <!-- 根据 userName 查询 -->  
+    <select id="getAppName" resultType="hashmap">  
+        SELECT  
+        <include refid="appColumns" />  
+        FROM  
+        testing u   
+    </select>  
+</mapper>

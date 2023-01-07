@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">   
+<mapper namespace="manage"> 
+	 <!-- 表字段显式 -->  
+    <sql id="appColumns">  
+        u.app_name AS "userName"    
+    </sql>  
+    <sql id="variCodeColumns">  
+		u.variCodeId AS "variCodeId",    
+		u.loginName AS "loginName",    
+	    u.variCode AS "variCode",      
+	    u.state AS "state",     
+		u.createDate AS "createDate",    
+		u.updateDate AS "updateDate"
+   </sql>  
+   <update  id="updateVariCodeState"  parameterType="Map" useGeneratedKeys="true"  keyProperty="string">  
+         update variCode set state=#{state}  
+  			where loginName=#{loginName}
+    </update>  
+    <insert  id="insertVariCode"  parameterType="Map" useGeneratedKeys="true"  keyProperty="string">  
+         insert into variCode(loginName,variCode,state)  
+    			values( #{loginName},#{variCode}, 0) 
+    </insert>  
+    <!-- 根据 userName 查询 -->  
+    <select id="getVariCode" parameterType="map" resultType="hashmap">  
+        SELECT  
+        <include refid="variCodeColumns" />  
+        FROM  
+        variCode u   
+        where loginName=#{loginName} and variCode=#{variCode} state=0
+        limit 1
+    </select>  
+    <select id="updateVariCode" parameterType="map">  
+        update variCode  set state=1  
+        where loginName=#{loginName} and variCode=#{variCode} state=0 
+    </select>  
+    <sql id="loginInfoColumns">  
+		u.loginId AS "loginId",    
+		u.loginName AS "loginName",    
+	    u.password AS "password",      
+	    u.userId AS "userId",    
+		u.oldPassowd AS "oldPassowd",    
+		u.state AS "state",
+		u.createDate AS "createDate",    
+		u.updateDate AS "updateDate"
+   </sql>  
+    
+    <!-- 根据 userName 查询 -->  
+    <select id="getloginInfoByAuth" parameterType="map" resultType="hashmap">  
+        SELECT  
+        <include refid="loginInfoColumns" />  
+        FROM  
+        logininfo u   
+        where loginName=#{loginName} 
+   		limit 1
+    </select>  
+    <!-- 根据 userName 查询 -->  
+    <select id="getloginInfoByLoginName" parameterType="map" resultType="hashmap">  
+        SELECT  
+        <include refid="loginInfoColumns" />  
+        FROM  
+        logininfo u  where loginName=#{loginName}
+    </select>  
+    <select id="getloginInfoByUserId" parameterType="map" resultType="hashmap">  
+        SELECT  
+        <include refid="loginInfoColumns" />  
+        FROM  
+        logininfo u  where  userId=#{userId} limit 1
+    </select>  
+    
+    
+    
+    <insert  id="insertloginInfo"  parameterType="Map" useGeneratedKeys="true"  keyProperty="string">  
+         insert into logininfo( password,loginName,userId,state)  
+    			values( #{password},#{loginName},#{userId},0) 
+    </insert>  
+     <update id="updateLoginInfoState"  parameterType="map">
+		 update logininfo SET state=#{state}
+		 where userId=#{userId}
+	</update>
+	
+     <update id="updateLoginPass"  parameterType="map">
+		 update logininfo SET password=#{password},updateDate=now()
+		 where loginName=#{loginName}
+	</update>
+     <!-- 根据 userName 查询 -->  
+    <select id="getAppName" resultType="hashmap">  
+        SELECT  
+        <include refid="appColumns" />  
+        FROM  
+        testing u   
+    </select>  
+    <!-- 根据 userInfo 查询 --> 
+    <sql id="UserinfoColumns">  
+        u.userId		AS "userId",
+		u.organize    AS "organize",
+		u.name        AS "name",
+		u.namePin     AS "namePin",
+		u.sex         AS "sex",
+		u.email       AS "email",
+		u.phone       AS "phone",
+		u.zoneqq      AS "zoneqq",
+		u.address     AS "address",
+		u.state       AS "state",
+		u.applyDate   AS "applyDate",
+		u.acceptDate  AS "acceptDate",
+		u.accepterId  AS "accepterId",
+		u.accepter  AS "accepter",
+		u.birthDate  AS "birthDate",
+		u.remark      AS "remark" 
+    </sql>
+     <select id="getUserinfoList" resultType="com.words.admin.manage.bean.UserInfoBean" parameterType="java.util.List">  
+        SELECT  
+        <include refid="UserinfoColumns" />  
+        FROM  UserInfo u  
+        where 1 = 1
+        <if test="list != null and list.size != 0">
+        and u.state in 
+	        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">  
+	            #{item}  
+	        </foreach>
+        </if>
+        order by organize 
+    </select>  
+        
+    <select id="getUserinfoByEmail"   parameterType="string" resultType="com.words.admin.manage.bean.UserInfoBean">  
+        SELECT  
+        <include refid="UserinfoColumns" />
+         FROM  UserInfo u where   u.email=  #{email}
+    </select>  
+    
+    <select id="getUserinfoById"   parameterType="int" resultType="com.words.admin.manage.bean.UserInfoBean">  
+        SELECT  
+        <include refid="UserinfoColumns" /> 
+        FROM  UserInfo u where   u.userId=  #{userId}
+    </select>  
+    <insert  id="insertUserInfo"  parameterType="com.words.admin.manage.bean.UserInfoBean" useGeneratedKeys="true"  keyProperty="string">  
+         insert into UserInfo(name, namepin, organize, sex, email, phone, zoneqq, remark, address,acceptDate)  
+    			values(#{name},#{namePin},#{organize},#{sex},#{email},#{phone},#{zoneqq},#{remark},#{address}, null) 
+    </insert>  
+    <insert  id="insertSimpleUserInfo"  parameterType="com.words.admin.manage.bean.UserInfoBean" useGeneratedKeys="true"  keyProperty="userId">  
+         insert into UserInfo( email)  
+    			values( #{email}) 
+    </insert>  
+    
+     <update id="updateUserInfo"  parameterType="com.words.admin.manage.bean.UserInfoBean">
+		 update UserInfo SET name=#{name},namepin=#{namePin},organize=#{organize},
+		        phone=#{phone},remark=#{remark},address=#{address},sex=#{sex},state=#{state}
+		 where userId=#{userId}
+	</update>
+     <update id="updateUserStatus"  parameterType="map">
+		 update UserInfo SET state=#{state},accepterId=#{accepter},acceptDate=now(),accepter=#{name}
+		 where userId=#{userId}
+	</update>
+     <!-- 根据 roleInfo 查询 --> 
+    <sql id="roleinfoColumns">  
+        r.roleId  		as "roleId",
+		r.name          as "name",
+		r.description   as "desc",
+		r.userId        as "userId",
+		r.service       as "service",
+		r.state         as "state",
+		r.createDate    as "createDate",
+		r.modifyDate    as "modifyDate"
+    </sql>   
+    
+     <select id="getRoleinfoByName"   parameterType="string" resultType="com.words.admin.manage.bean.RoleInfoBean">  
+        SELECT  
+        <include refid="roleinfoColumns" />  
+        FROM  roleinfo r where   r.name=  #{name}
+    </select> 
+     <select id="getRoleinfoListByUserId"   parameterType="int" resultType="com.words.admin.manage.bean.RoleInfoBean">  
+        SELECT  
+        <include refid="roleinfoColumns" />  
+        FROM  roleinfo r where   r.userId=  #{userId}
+    </select> 
+     <select id="getRoleInfoById"   parameterType="int" resultType="com.words.admin.manage.bean.RoleInfoBean">  
+        SELECT  
+        <include refid="roleinfoColumns" />  
+        FROM  roleinfo r where   r.roleId=  #{roleId}
+    </select>  
+    <select id="getRoleinfoList"    resultType="com.words.admin.manage.bean.RoleInfoBean">  
+        SELECT  
+        <include refid="roleinfoColumns" />  
+        FROM  roleinfo r 
+    </select>  
+    <insert  id="insertRoleInfo"  parameterType="com.words.admin.manage.bean.RoleInfoBean" useGeneratedKeys="true"  keyProperty="string">  
+         insert into roleinfo(name,description,userId,service)  
+    			values(#{name},#{desc},#{userId},#{service}) 
+    </insert>  
+    <update id="updateRoleInfo"  parameterType="com.words.admin.manage.bean.RoleInfoBean">
+		 update UserInfo SET name=#{name},description=#{desc},modifyDate={modifyDate}
+		 where roleId=#{roleId}
+	</update>
+    <!-- 根据 roleInfo 查询 --> 
+     <sql id="serviceinfoColumns">  
+        s.serviceId  		as "serviceId",
+		s.description          as "description",
+		s.name   as "name",
+		s.state        as "state",
+		s.createDate       as "createDate",
+		s.modifyDate         as "modifyDate" 
+     </sql>     
+     <select id="getServiceListByServiceId"   parameterType="int" resultType="com.words.admin.manage.bean.ServiceInfoBean">  
+        SELECT  
+        <include refid="serviceinfoColumns" />  
+        FROM  ServiceInfo s where   s.serviceId=  #{serviceId}
+    </select> 
+    
+    <select id="getServiceListByRole"   parameterType="int" resultType="com.words.admin.manage.bean.ServiceInfoBean">  
+        SELECT  
+        <include refid="serviceinfoColumns" />  
+         FROM  ServiceInfo s inner join rolerel r on r.authId = s.serviceId where roleId=#{roleId};
+    </select> 
+    <select id="getServiceListAll"    resultType="com.words.admin.manage.bean.ServiceInfoBean">  
+        SELECT  
+        <include refid="serviceinfoColumns" />  
+        FROM  ServiceInfo s  
+    </select> 
+    
+    <sql id="authInfoColumns">  
+        aR.userId  		as "userId",
+		s.action          as "authKey",
+		a.authId   as "authId"
+	 </sql>     
+      
+       
+    <select id="checkManagerAuth"    parameterType="map" resultType="map">  
+         select 
+        <include refid="authInfoColumns" />    
+        FROM  authRelation aR inner join rolerel a 
+         on ar.authId=a.roleId
+         inner join serviceinfo s on a.authId=s.serviceId
+         where a.state=0
+         and aR.state=0
+         and aR.userId =1
+    </select>
+    
+    
+     <insert  id="insertauthrelation"  parameterType="java.util.List" useGeneratedKeys="true"  keyProperty="string">  
+         insert into authrelation(userId, authId, state)  
+  			values
+  			<foreach collection="list" index="index" item="item" separator=",">  
+	           (#{item.userId},#{item.authId},#{item.state}) 
+	       	</foreach> 
+     </insert>
+     
+     <delete  id="deleteauthrelation"  parameterType="java.util.List">  
+         delete from authrelation where   1=1 and  
+  			<foreach collection="list" index="index" item="item"   open="("  separator=" or " close=")">  
+	           (userId=#{item.userId}) 
+	       	</foreach>  
+     </delete>  
+     <insert  id="insertrolerel"  parameterType="java.util.List" useGeneratedKeys="true"  keyProperty="string">  
+         insert into rolerel(roleId, authId, state)  
+  			values
+  			<foreach collection="list" index="index" item="item" separator=",">  
+	           (#{item.roleId},#{item.authId},#{item.state}) 
+	       	</foreach> 
+     </insert> 
+     <delete  id="deleterolerel"  parameterType="java.util.List">  
+         delete from rolerel where   1=1 and  
+  			<foreach collection="list" index="index" item="item"   open="("  separator=" or " close=")">  
+	           (roleId=#{item.roleId}) 
+	       	</foreach>  
+     </delete>    
+     <delete  id="deleteroleinfo"  parameterType="map">  
+         delete from roleinfo where   1=1 and roleId=#{roleId}
+     </delete>   
+     
+     <resultMap id="authrelationroleMap" type="hashmap"> 
+        <result property="roleId" column="roleId"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+     </resultMap>
+     <select id="getauthrelationrole" parameterType="map" resultType="com.words.admin.manage.bean.RoleInfoBean">
+     	select  
+     		<include refid="roleinfoColumns" />   
+     		from authrelation inner join roleinfo r
+     		on authId=r.roleId
+     		where authrelation.userId=#{userId}
+     </select>
+     
+     
+</mapper>

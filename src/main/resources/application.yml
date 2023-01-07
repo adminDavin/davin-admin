@@ -1,0 +1,42 @@
+doc-words:
+   jodconverter:
+      enabled: true
+      officeHom: /opt/openoffice4
+      workingDir: /opt/openoffice4
+      portNumbers: 8100, 8101, 8102, 8103, 8104, 8105, 8106, 8107, 8108, 8109
+      maxTasksPerProcess: 10
+logging.level:
+   com.t.zero: info
+   com.t.zero.doc.words.dao: debug
+spring:
+   servlet.multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+   jackson:
+      date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+      time-zone: GMT
+      default-property-inclusion: non_null
+   datasource:
+      name: dataSource
+      type: com.zaxxer.hikari.HikariDataSource
+      url: jdbc:mysql://t-zero-mysql.com:3306/changshu_world?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
+      username: t_zero
+      password: tZeroDavin!123
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+         connection-test-query: select now()
+         idle-timeout: 3000000
+         auto-commit: true
+         max-lifetime: 1200000
+         maximum-pool-size: 60
+         minimum-idle: 10
+         login-timeout: 5
+         validation-timeout: 300000
+         connection-timeout: 600000000
+         read-only: false
+mybatis:
+   configuration:
+      ocal-cache-scope: statement
+   mapper-locations:
+   - auto-mappers/*.xml
+   - manual-mappers/*.xml

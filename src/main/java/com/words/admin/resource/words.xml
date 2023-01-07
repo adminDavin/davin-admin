@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">   
+<mapper namespace="words"> 
+	 <!-- 表字段显式 -->  
+    <sql id="appColumns">  
+        u.app_name AS "userName"    
+    </sql>  
+    <!-- 根据 documentInfo 查询 -->  
+     <sql id="documentInfo">     
+        d.docId AS "docId" ,   
+        d.name AS "name",
+        d.originalName AS "originalName",
+        d.uuid AS "uuid",
+        d.userId AS "userId"  ,
+        d.createTime AS "createTime",   
+        d.updateTime AS "updateTime",   
+        d.expireTime AS "expireTime",   
+        d.Remark AS "Remark"     
+    </sql>  
+     
+    <select id="getDocuCountByUuid" parameterType="String"  resultType="int">  
+        SELECT  
+        count(1)
+        FROM  
+        documentInfo u   where uuId=#{uuId}
+    </select>  
+    <select id="getAppName"  resultType="com.words.admin.words.bean.DocumentInfo">  
+        SELECT  
+        <include refid="documentInfo" />  
+        FROM  
+        documentInfo u   
+    </select>  
+    
+    <select id="getDocuInfoListAll" parameterType="com.words.admin.words.bean.DocumentInfo" resultType="com.words.admin.words.bean.DocumentInfo">  
+        SELECT  
+        <include refid="documentInfo" />  
+        FROM  
+        documentInfo d where userId=#{userId}  
+    </select>  
+     <select id="getDocuInfoList" parameterType="com.words.admin.words.bean.DocumentInfo" resultType="com.words.admin.words.bean.DocumentInfo">  
+        SELECT  
+        <include refid="documentInfo" />  
+        FROM  
+        documentInfo d where userId=#{userId}  and state=#{state}
+    </select>  
+    <insert  id="insertDocumentInfo"  parameterType="com.words.admin.words.bean.DocumentInfo" useGeneratedKeys="true"  keyProperty="docId">  
+         insert into documentInfo(name,originalName,uuid,userId)  
+    			values(#{name},#{originalName},#{uuid},#{userId}) 
+    </insert>   
+    <update id="updateDocument"  parameterType="String">  
+         update documentInfo set state=2 where uuid=#{uuid}
+    </update >     
+    
+    <!-- 根据  wordsInfo  查询 -->  
+     <sql id="wordsInfo">     
+        w.wordsId AS "wordsId" ,   
+        w.docId AS "docId",
+        w.userId AS "userId",
+        w.textContent AS "textContent",
+        w.initPage AS "initPage"  ,
+        w.pageNum AS "pageNum",   
+        w.state AS "state",   
+        w.createTime AS "createTime",   
+        w.updateTime AS "updateTime"     
+    </sql>  
+    <select id="getWordsInfoText" parameterType="com.words.admin.words.bean.WordsInfo" resultType="com.words.admin.words.bean.WordsInfo">  
+        SELECT  
+        <include refid="wordsInfo" />  
+        FROM  
+        wordsInfo w where docId=#{docId} and textContent=#{textContent} and state=0
+    </select>  
+    <select id="getWordsInfoList" parameterType="com.words.admin.words.bean.WordsInfo" resultType="com.words.admin.words.bean.WordsInfo">  
+        SELECT  
+        <include refid="wordsInfo" />  
+        FROM  
+        wordsInfo w where docId=#{docId}   and state=#{state} and userId=#{userId}
+    </select> 
+     
+    <select id="getWordsInfoListAll" parameterType="com.words.admin.words.bean.WordsInfo" resultType="com.words.admin.words.bean.WordsInfo">  
+        SELECT  
+        <include refid="wordsInfo" />  
+        FROM  
+        wordsInfo w where docId=#{docId}  and userId=#{userId}
+    </select>   
+     <insert  id="insertWordsInfo"  parameterType="com.words.admin.words.bean.WordsInfo" useGeneratedKeys="true"  keyProperty="wordsId">  
+         insert into wordsInfo(docId,userId,textContent,initPage,pageNum)  
+    			values(#{docId},#{userId},#{textContent},#{initPage},#{pageNum}) 
+    </insert> 
+    <delete id="deleteWordsById" parameterType="int">  
+	     DELETE FROM wordsInfo WHERE wordsId = #{wordsId}  
+	</delete>  
+    
+</mapper>
