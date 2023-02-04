@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import jodd.json.JsonObject;
 
 public class RespUtils implements HandlerExceptionResolver {
@@ -21,6 +23,15 @@ public class RespUtils implements HandlerExceptionResolver {
 		success.setResult(result);
 		return success.result();
 	}
+	
+	public static String success(JsonNode result) {
+		AppResponseBody<JsonNode> success = new AppResponseBody<JsonNode>();
+		success.setCode("200");
+		success.setMessage("success");
+		success.setResult(result);
+		return success.result();
+	}
+
 
 	public static String failed(String reason) {
 		AppResponseBody<String> failed = new AppResponseBody<String>();
@@ -31,6 +42,18 @@ public class RespUtils implements HandlerExceptionResolver {
 	}
 
 	public static void responseJsonSuccess(HttpServletResponse response, JsonObject result) {
+		response.setContentType(contentType);
+		try (PrintWriter out = response.getWriter()) {
+			out.append(success(result));
+		} catch (IOException e) {
+			System.out.println("系统错误");
+			e.printStackTrace();
+		}
+
+	}
+	
+
+	public static void responseJsonSuccess(HttpServletResponse response, JsonNode result) {
 		response.setContentType(contentType);
 		try (PrintWriter out = response.getWriter()) {
 			out.append(success(result));

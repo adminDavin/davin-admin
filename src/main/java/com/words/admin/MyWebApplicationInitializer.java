@@ -33,7 +33,7 @@ package com.words.admin;
 //
 //
 //@HandlesTypes(WebApplicationInitializer.class)
-//@ComponentScan("com.words.admin.manage.service")
+//@ComponentScan("com.t.zero.doc.words.manage.service")
 //@ComponentScan("com.words.admin.manage.repository")
 //
 //@ComponentScan("com.words.admin.TaskScheduler")

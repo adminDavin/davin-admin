@@ -23,10 +23,7 @@ public class ReadFile {
 			String suffix = oldFileName.substring(oldFileName.lastIndexOf(".") + 1);
 
 			Path saveFile = Paths.get(saveDir.toString(), newName + "." + suffix);
-			// System.out.println(file.getOriginalFilename());
-			// Files.write(saveFile, file.getBytes());
 			File saveName = new File(saveFile.toString());
-			// System.out.println(saveFile.toString());
 			file.transferTo(saveName);
 			if (!Constant.EXPORTPDF.equals(suffix)) {
 				Path otherFile = Paths.get(saveDir.toString(), newName + "." + Constant.EXPORTPDF);

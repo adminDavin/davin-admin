@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
@@ -62,6 +63,20 @@ public class ExportServicePdfImpl implements ExportService {
 		doc.add(table);
 	}
 
+	@Override
+	public void setTableForWordsExport(ArrayNode tabCon) throws Exception {
+		PdfPTable table = new PdfPTable(8);
+		table.setWidthPercentage(100);
+		List<List<String>> dataset = getData();
+		for (List<String> record : dataset) {
+			for (String field : record) {
+				table.addCell(field);
+			}
+		}
+		doc.add(table);
+	}
+
+	
 	public List<List<String>> getData() {
 		List<List<String>> data = new ArrayList<List<String>>();
 		String[] tableTitleList = { " Title", " (Re)set", " Obs", " Mean", " Std.Dev", " Min", " Max", "Unit" };

@@ -1,4 +1,6 @@
 doc-words:
+   files:
+      uploadpath: /home/pump/words/pdfs
    jodconverter:
       enabled: true
       officeHom: /opt/openoffice4
@@ -29,7 +31,7 @@ spring:
          auto-commit: true
          max-lifetime: 1200000
          maximum-pool-size: 60
-         minimum-idle: 10
+         minimum-idle: 5
          login-timeout: 5
          validation-timeout: 300000
          connection-timeout: 600000000

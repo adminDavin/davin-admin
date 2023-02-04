@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <classPathEntry location="/Users/davinzhang/.m2/repository/mysql/mysql-connector-java/8.0.25/mysql-connector-java-8.0.25.jar" />
+    <context id="MySQLTables" targetRuntime="MyBatis3">
+        <property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter" />
+        <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter" />
+        <property name="javaFileEncoding" value="UTF-8" />
+
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+        <!-- 配置生成自定义的类序列化接口的插件 -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver" connectionURL="jdbc:mysql://t-zero-mysql.com:3306/changshu_world?serverTimezone=UTC" userId="t_zero_dev" password="Davin1203!">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="useJSR310Types" value="true" />
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.t.zero.doc.words.model.auto" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="auto-mappers" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.t.zero.doc.words.dao.auto" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+
+        <table schema="changshu_world" tableName="logininfo" domainObjectName="Logininfo">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="loginId" sqlStatement="mysql" identity="true" />
+            <columnOverride column="is_deleted" property='deletedFlag' />
+        </table>
+        <table schema="changshu_world" tableName="authinfo" domainObjectName="Authinfo">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="authId" sqlStatement="mysql" identity="true" />
+            <columnOverride column="is_deleted" property='deletedFlag' />
+        </table>
+        <table schema="changshu_world" tableName="authrelation" domainObjectName="Authrelation">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="authRelId" sqlStatement="mysql" identity="true" />
+            <columnOverride column="is_deleted" property='deletedFlag' />
+        </table>
+        <table schema="changshu_world" tableName="documentinfo" domainObjectName="Documentinfo">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="docId" sqlStatement="mysql" identity="true" />
+            <columnOverride column="is_deleted" property='deletedFlag' />
+        </table>
+        <table schema="changshu_world" tableName="roleinfo" domainObjectName="Roleinfo">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="roleId" sqlStatement="mysql" identity="true" />
+            <columnOverride column="is_deleted" property='deletedFlag' />
+        </table>
+        <table schema="changshu_world" tableName="rolerel" domainObjectName="Rolerel">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="roleRelId" sqlStatement="mysql" identity="true" />
+            <columnOverride column="is_deleted" property='deletedFlag' />
+        </table>
+        <table schema="changshu_world" tableName="serviceinfo" domainObjectName="Serviceinfo">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="serviceId" sqlStatement="mysql" identity="true" />
+            <columnOverride column="is_deleted" property='deletedFlag' />
+        </table>
+        <table schema="changshu_world" tableName="userinfo" domainObjectName="Userinfo">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="userId" sqlStatement="mysql" identity="true" />
+            <columnOverride column="is_deleted" property='deletedFlag' />
+        </table>
+        <table schema="changshu_world" tableName="varicode" domainObjectName="Varicode">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="variCodeId" sqlStatement="mysql" identity="true" />
+            <columnOverride column="is_deleted" property='deletedFlag' />
+        </table>
+        <table schema="changshu_world" tableName="wordsinfo" domainObjectName="Wordsinfo">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="wordsId" sqlStatement="mysql" identity="true" />
+            <columnOverride column="is_deleted" property='deletedFlag' />
+        </table>
+
+    </context>
+</generatorConfiguration>	

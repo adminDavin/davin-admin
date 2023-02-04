@@ -70,7 +70,7 @@ public class WordsAdminController {
 		}
 		String newName = UUID.randomUUID().toString().replace("-", "");
 		try {
-			new ReadFile().readToFile(file, Paths.get(Constant.PDFPATH), newName);
+			new ReadFile().readToFile(file, Paths.get(Constant.PDFPATH + "\\" + String.valueOf(userId)), newName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			RespUtils.responseJsonFailed(response, "load file failed!");

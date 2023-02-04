@@ -3,10 +3,14 @@ package com.words.admin.manage.repository;
 import java.util.List;
 import java.util.Map;
 
-import com.words.admin.manage.bean.RoleInfoBean;
-import com.words.admin.manage.bean.ServiceInfoBean;
-import com.words.admin.manage.bean.UserInfoBean;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.t.zero.doc.words.manage.bean.RoleInfoBean;
+import com.t.zero.doc.words.manage.bean.ServiceInfoBean;
+import com.t.zero.doc.words.manage.bean.UserInfoBean;
+
+
+@Mapper
 public interface ManageRepository {
 	public Map<String, String[]> getUserInfo() throws Exception;
 

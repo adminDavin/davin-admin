@@ -2,6 +2,8 @@ package com.words.admin.words.export;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import jodd.json.JsonArray;
 
 public interface ExportService {
@@ -11,6 +13,7 @@ public interface ExportService {
 	public void docClose();
 
 	public void setTableForWordsExport(JsonArray tabCon) throws Exception;
+	public void setTableForWordsExport(ArrayNode tabCon) throws Exception;
 
 	public byte[] getDocContent();
 

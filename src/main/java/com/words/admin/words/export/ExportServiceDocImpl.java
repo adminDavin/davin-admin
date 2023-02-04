@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -51,7 +53,7 @@ public class ExportServiceDocImpl implements ExportService {
 	}
 
 	public void setDocTitle(String titleString) throws DocumentException {
-		Font titleFont = FontFactory.getFont(FontFactory.HELVETICA , 12, Font.UNDERLINE);
+		Font titleFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.UNDERLINE);
 		PdfPCell cell = new PdfPCell();
 		cell.setPhrase(new Phrase(titleString, titleFont));
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -62,7 +64,7 @@ public class ExportServiceDocImpl implements ExportService {
 	}
 
 	public void setDocPara(String ParaString) throws DocumentException {
-		Font titleFont = FontFactory.getFont(FontFactory.HELVETICA , 12, Font.UNDERLINE);
+		Font titleFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.UNDERLINE);
 		Paragraph context = new Paragraph(ParaString);
 		context.setFont(titleFont);
 		context.setSpacingBefore(10);
@@ -96,10 +98,34 @@ public class ExportServiceDocImpl implements ExportService {
 		doc.add(table);
 	}
 
+	@Override
+	public void setTableForWordsExport(ArrayNode tabCon) throws Exception {
+		// RtfFont titleFont = new RtfFont("仿宋_GB2312", 12, Font.NORMAL, Color.BLACK);
+		// /** 正文字体 */
+		PdfPTable table = new PdfPTable(3);
+		int width[] = { 20, 50, 20 };// 设置每列宽度比例
+		table.setWidths(width);
+		table.setWidthPercentage(90);// 占页面宽度比例
+//		table.setAlignment(Element.ALIGN_CENTER);// 居中
+//		table.setAlignment(Element.ALIGN_MIDDLE);// 垂直居中
+//		table.setAutoFillEmptyCells(true);// 自动填满
+//		table.setBorderWidth(1);// 边框宽度
+		int index = 1;
+		for (JsonNode item : tabCon) {
+			table.addCell(getCell(String.valueOf(index)));
+			table.addCell(getCell(item.get(Constant.TEXTCONTENT).asText()));
+			int init = item.get(Constant.INITPAGE).asInt();
+			int page = item.get(Constant.PAGENUM).asInt();
+			table.addCell(getCell(String.valueOf(page + init)));
+			index++;
+		}
+		doc.add(table);
+	}
+
 	public PdfPCell getCell(String name) throws BadElementException {
-		Font contextFont = FontFactory.getFont(FontFactory.HELVETICA , 12, Font.UNDERLINE);
+		Font contextFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.UNDERLINE);
 		PdfPCell cell = new PdfPCell();
-		 cell.setPhrase(new Phrase(name, contextFont));
+		cell.setPhrase(new Phrase(name, contextFont));
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		// cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		// cell.setBorderColor(new Color(189, 22, 33));
@@ -161,12 +187,10 @@ public class ExportServiceDocImpl implements ExportService {
 		this.doc = doc;
 	}
 
-	
-
 	@Override
 	public void setResponse(HttpServletResponse response, String fileName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.t.zero.doc.words.config.Constant;
-import com.words.admin.manage.bean.RoleInfoBean;
-import com.words.admin.manage.bean.ServiceInfoBean;
-import com.words.admin.manage.bean.UserInfoBean;
+import com.t.zero.doc.words.manage.bean.RoleInfoBean;
+import com.t.zero.doc.words.manage.bean.ServiceInfoBean;
+import com.t.zero.doc.words.manage.bean.UserInfoBean;
 
 @Repository("manageRepository")
 public class ManageRepositoryImpl implements ManageRepository {

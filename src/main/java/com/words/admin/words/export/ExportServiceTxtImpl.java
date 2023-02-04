@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.util.FileCopyUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.itextpdf.text.pdf.ByteBuffer;
 
 import jodd.json.JsonArray;
@@ -33,13 +35,26 @@ public class ExportServiceTxtImpl implements ExportService {
 
 	@Override
 	public void setTableForWordsExport(JsonArray tabCon) throws Exception {
-        for (Object item : tabCon) {
+		var i = 0;
+		for (Object item : tabCon) {
+        	var t = tabCon.size() == i ? "": endswith;
+        	i++;
         	JsonObject wordsInfo = (JsonObject) item;
-        	String row = ExportUtils.getRowFormat(wordsInfo, separator, endswith);
+        	String row = ExportUtils.getRowFormat(wordsInfo, separator, t);
         	log.info(wordsInfo);
         	if (row == null) {
         		continue;
         	}
+        	content.append(row.getBytes(characterSet));
+        }
+	}
+	@Override
+	public void setTableForWordsExport(ArrayNode tabCon) throws Exception {
+		var i = 0;
+        for (JsonNode item : tabCon) {
+        	var t = tabCon.size() == i ? "": endswith;
+        	i++;
+        	String row = ExportUtils.getRowFormat(item, separator, t);
         	content.append(row.getBytes(characterSet));
         }
 	}
